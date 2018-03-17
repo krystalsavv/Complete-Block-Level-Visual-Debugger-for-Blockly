@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>BLOCKLY</title>
+  <script src="acorn_interpreter_uncompressed.js"></script>
+  <script src="blockly_uncompressed.js"></script>
+  <script src="blocks_compressed.js"></script>
+  <script src="javascript_uncompressed.js"></script>
+  <script src="en.js"></script>
+  <script src="worker.js"></script>
+ <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
+</head>
+<body>
+  <h1><a href="https://developers.google.com/blockly/">Blockly</a>
+  <p>
+    <button onClick="Run()">Run</button>
+    <button onClick="Step()">Step</button> 
+
+  </p>
+  <div id="result"></div>
+  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Logic">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+    </category>
+    <category name="Loops">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+    </category>
+    <category name="Math">
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="math_single"></block>
+    </category>
+    <category name="Text">
+      <block type="text"></block>
+      <block type="text_length"></block>
+      <block type="text_print"></block>
+      <block type="text_prompt_ext">
+        <value name="TEXT">
+          <block type="text"></block>
+        </value>
+      </block>
+    </category>
+    <category name="Variables" custom="VARIABLE"></category>
+    <category name="Functions" custom="PROCEDURE"></category>
+  </xml>
+
+  <xml id="startBlocks" style="display: none">
+    <block type="variables_set" inline="true" x="20" y="20">
+      <field name="VAR">n</field>
+      <value name="VALUE">
+        <block type="math_number">
+          <field name="NUM">1</field>
+        </block>
+      </value>
+      <next>
+        <block type="controls_repeat_ext" inline="true">
+          <value name="TIMES">
+            <block type="math_number">
+              <field name="NUM">4</field>
+            </block>
+          </value>
+          <statement name="DO">
+            <block type="variables_set" inline="true">
+              <field name="VAR">n</field>
+              <value name="VALUE">
+                <block type="math_arithmetic" inline="true">
+                  <field name="OP">MULTIPLY</field>
+                  <value name="A">
+                    <block type="variables_get">
+                      <field name="VAR">n</field>
+                    </block>
+                  </value>
+                  <value name="B">
+                    <block type="math_number">
+                      <field name="NUM">2</field>
+                    </block>
+                  </value>
+                </block>
+              </value>
+            </block>
+          </statement>
+          <next>
+            <block type="text_print" inline="false">
+              <value name="TEXT">
+                <block type="variables_get">
+                  <field name="VAR">n</field>
+                </block>
+              </value>
+            </block>
+          </next>
+        </block>
+      </next>
+    </block>
+  </xml>
+
+  <script>
+    var workspace = Blockly.inject('blocklyDiv',
+        {media: '../../media/',
+         toolbox: document.getElementById('toolbox')});
+         
+    Blockly.Xml.domToWorkspace(workspace,
+        document.getElementById('startBlocks'));
+
+    var worker;
+    function Run(){
+        if(typeof(Worker) !== "undefined") {
+            if(typeof(worker) == "undefined") {
+                worker = new Worker("thread.js");
+            }
+            worker.onmessage = function(e) {
+                    alert(e.data);
+                };
+        } else {
+            document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers.";
+        }
+        var code = "var x = 2; window.alert(x);"//Blockly.JavaScript.workspaceToCode(workspace);
+        let codetxt = code.replace(/(\r\n|\n|\r)/gm," "); 
+        let m = '{"type":"run","content" : "' + codetxt + '" }';
+        //worker.postMessage(m);
+        worker.postMessage({"type":"run", "content": code});
+    }
+
+    var start = false;
+    function Step(){
+        if(!start){
+            start = true;
+            if(typeof(Worker) !== "undefined") {
+                if(typeof(worker) == "undefined") {
+                    worker = new Worker("thread.js");
+                }
+                worker.onmessage = function(e) {
+                    alert(e.data);
+                };
+            } else {
+                document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers.";
+            }
+
+            //Blockly.JavaScript.STATEMENT_PREFIX = 'await step_wait();\n';
+            var code = "var x = 2; await step_wait(); window.alert(x);"
+           //Blockly.JavaScript.workspaceToCode(workspace);
+            let codetxt = code.replace(/(\r\n|\n|\r)/gm," "); 
+            let m = '{"type":"code","content" : "' + codetxt + '" }';
+            worker.postMessage(m);
+
+        }else{
+            worker.postMessage('{"type":"step"}');
+        }
+    }
+</script>
+
+</body>
+</html>
