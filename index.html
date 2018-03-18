@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <title>BLOCKLY</title>
-  <script src="acorn_interpreter_uncompressed.js"></script>
-  <script src="blockly_uncompressed.js"></script>
-  <script src="blocks_compressed.js"></script>
-  <script src="javascript_uncompressed.js"></script>
-  <script src="en.js"></script>
-  <script src="worker.js"></script>
+  <script src="blockly/demos/interpreter/acorn_interpreter.js"></script>
+  <script src="blockly/blockly_compressed.js"></script>
+  <script src="blockly/blocks_compressed.js"></script>
+  <script src="blockly/javascript_uncompressed.js"></script>
+  <script src="blockly/msg/js/en.js"></script>
+
  <style>
     body {
       background-color: #fff;
@@ -21,6 +21,7 @@
   </style>
 </head>
 <body>
+    <!--script src="bundle.js"></script-->
   <h1><a href="https://developers.google.com/blockly/">Blockly</a>
   <p>
     <button onClick="Run()">Run</button>
@@ -116,60 +117,7 @@
     </block>
   </xml>
 
-  <script>
-    var workspace = Blockly.inject('blocklyDiv',
-        {media: '../../media/',
-         toolbox: document.getElementById('toolbox')});
-         
-    Blockly.Xml.domToWorkspace(workspace,
-        document.getElementById('startBlocks'));
-
-    var worker;
-    function Run(){
-        if(typeof(Worker) !== "undefined") {
-            if(typeof(worker) == "undefined") {
-                worker = new Worker("thread.js");
-            }
-            worker.onmessage = function(e) {
-                    alert(e.data);
-                };
-        } else {
-            document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers.";
-        }
-        var code = "var x = 2; window.alert(x);"//Blockly.JavaScript.workspaceToCode(workspace);
-        let codetxt = code.replace(/(\r\n|\n|\r)/gm," "); 
-        let m = '{"type":"run","content" : "' + codetxt + '" }';
-        //worker.postMessage(m);
-        worker.postMessage({"type":"run", "content": code});
-    }
-
-    var start = false;
-    function Step(){
-        if(!start){
-            start = true;
-            if(typeof(Worker) !== "undefined") {
-                if(typeof(worker) == "undefined") {
-                    worker = new Worker("thread.js");
-                }
-                worker.onmessage = function(e) {
-                    alert(e.data);
-                };
-            } else {
-                document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers.";
-            }
-
-            //Blockly.JavaScript.STATEMENT_PREFIX = 'await step_wait();\n';
-            var code = "var x = 2; await step_wait(); window.alert(x);"
-           //Blockly.JavaScript.workspaceToCode(workspace);
-            let codetxt = code.replace(/(\r\n|\n|\r)/gm," "); 
-            let m = '{"type":"code","content" : "' + codetxt + '" }';
-            worker.postMessage(m);
-
-        }else{
-            worker.postMessage('{"type":"step"}');
-        }
-    }
-</script>
+  <script src="src/index.js"></script>
 
 </body>
 </html>

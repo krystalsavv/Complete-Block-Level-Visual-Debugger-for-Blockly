@@ -1,22 +1,20 @@
 var flag = true;
 let window = {
-    alert : function(x) {
-      postMessage(x);
+    alert : function(msg) {
+      postMessage({"type": "alert", "data" : msg});
     }
 } ;  
-
 
 var instractions = {
   "run" :  () => {
     window.alert(content);
     if(content!=undefined)
       eval(content);
-     // eval("async function code(){"+ content +"} code();");
     else 
       alert("The content is undefined.");
   },
 
-  "code" : async () => {
+  "code" : async function () {
     window.alert(content);
     if(content!=undefined)
       eval("async function code(){"+ content +"} code();");
@@ -25,7 +23,6 @@ var instractions = {
   },
   
   "step" : () => {
-    //window.alert("step button pressed");
     flag = true;
   }
 };
@@ -43,7 +40,7 @@ async function loop(){
                          resolve();          
                        }, 
                        ()=>{
-                      //   console.log("reject in");
+                         //console.log("reject in");
                          reject();
                        });
                      }
@@ -56,59 +53,16 @@ async function step_wait(){
     flag = false;
     let wait = await loop().then(()=>{console.log("Step");}, 
     ()=>{});
-    window.alert("Step");
+    //window.alert("Step");
 }
 
-async function myCode(){
-   let str = " var x = 0;"+
-   " x++;"+
-   " window.alert(x);"+
-    "await step_wait();"+
-    "x++;"+
-    "window.alert(x);";
-    window.alert(str);
-    eval("async function code(){"+str +"} code();");
-
-    /*var x = 0;
-    x++;
-    window.alert(x);
-    await step_wait();
-    x++;
-    window.alert(x);*/
+function highlightBlock(id){
+  postMessage({"type": "highlightBlock", "data" : id});
 }
 
-
-/*addEventListener("run",function (){
-  window.alert(content);
-  if(content!=undefined)
-    eval(content);
-   // eval("async function code(){"+ content +"} code();");
-  else 
-    alert("The content is undefined.");
-});
-
-addEventListener("code",async function (){
-  window.alert(content);
-  if(content!=undefined)
-    eval("async function code(){"+ content +"} code();");
-  else 
-    alert("The content is undefined.");
-});
-
-addEventListener("step",function (){
-  //window.alert("step button pressed");
-  flag = true;
-});*/
 
 onmessage = function (msg) {
- // obj = JSON.parse(msg.data);
-  obj = msg.data;
-  content = obj.content;
-  window.alert(obj.content);
-  window.alert(obj.type);
- // instractions.
-
- // dispatchEvent(new Event(obj.type));
+  let obj = msg.data;
+  content = obj.data;
+  instractions[obj.type]();
 }
-
-//myCode();
