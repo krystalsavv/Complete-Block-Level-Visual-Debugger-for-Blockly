@@ -14,7 +14,7 @@ var instractions = {
       alert("The content is undefined.");
   },
 
-  "code" : async function () {
+  "code" : async () => {
     window.alert(content);
     if(content!=undefined)
       eval("async function code(){"+ content +"} code();");
@@ -27,34 +27,21 @@ var instractions = {
   }
 };
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-async function loop(){
-    return new Promise((resolve, reject)=>{
-      setTimeout(async ()=>{
-                     if(flag === true){
-                       resolve();
-                     }
-                     else {
-                       let wait = await loop().then(()=>{
-                         //console.log("resolve in");
-                         resolve();          
-                       }, 
-                       ()=>{
-                         //console.log("reject in");
-                         reject();
-                       });
-                     }
-                   },100);
-    });
-   }
-
+function next_message() { 
+  return sleep(0); 
+}
 
 async function step_wait(){
-    flag = false;
-    let wait = await loop().then(()=>{console.log("Step");}, 
-    ()=>{});
-    //window.alert("Step");
+  flag = false;
+  while (flag==false) {
+    await next_message();
+  }
 }
+
 
 function highlightBlock(id){
   postMessage({"type": "highlightBlock", "data" : id});
