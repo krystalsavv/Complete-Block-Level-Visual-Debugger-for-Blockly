@@ -1,13 +1,13 @@
-import {actions, flag, flag_out, flag_over} from "../init.js";
+import {actions, flags} from "../init.js";
 
 actions["stepOut"] = () => {
-  require("../init.js").flag = true;
-  require("../init.js").flag_over = false;
-  require("../init.js").flag_out = true;
+  flags.in = true;
+  flags.over = false;
+  flags.out = true;
 };
 
 export function isStepOut(){
-    if(require("../init.js").flag_out==true)
+    if(flags.out == true)
       return true;
     else
       return false;  

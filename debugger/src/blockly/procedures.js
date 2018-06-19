@@ -24,7 +24,7 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
     }
     var code = 'async function ' + funcName + '(' + args.join(', ') + ') {\n' +
         '  let local_over = isStepOver();\n  let local_out = isStepOut();\n' +
-        branch + '  if(local_out==false) flag_out = false;\n' + returnValue + '}'; 
+        branch + '  if(local_out==false) flags.out = false;\n' + returnValue + '}'; 
     code = Blockly.JavaScript.scrub_(block, code);
     Blockly.JavaScript.definitions_[funcName] = code;
     return null;

@@ -1,4 +1,4 @@
-import {actions} from "../init.js";
+import {actions, window} from "../init.js";
 
 actions["run"] = (content) => {
     window.alert(content);

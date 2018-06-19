@@ -6,7 +6,7 @@ Blockly.Xml.domToWorkspace(window.workspace,
 	document.getElementById('startBlocks'));
 		
 
-export var DebuggeeWorker = (function (){
+export var Debuggee_Worker = (function (){
 	var instance;
 	var dispatcher;
 	  

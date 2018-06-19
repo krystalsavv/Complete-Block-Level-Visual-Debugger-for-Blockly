@@ -6,6 +6,8 @@ export var window = {
 
 export var actions = {};
 
-export var flag = true;
-export var flag_over = false;
-export var flag_out = false;
+export var flags = {
+  in : true, 
+  over : false,
+  out : false
+}

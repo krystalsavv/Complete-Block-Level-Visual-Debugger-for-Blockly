@@ -1,16 +1,16 @@
-import {DebuggeeWorker, Blocly_Debugger} from '../init.js';
+import {Debuggee_Worker, Blocly_Debugger} from '../init.js';
 
 Blocly_Debugger["StepInto"] = () => {
-    if(!DebuggeeWorker.hasInstance()) return; 
-    DebuggeeWorker.Instance().postMessage({"type":"stepInto"});
+    if(!Debuggee_Worker.hasInstance()) return; 
+    Debuggee_Worker.Instance().postMessage({"type":"stepInto"});
 }
 
 Blocly_Debugger["StepOver"] = () => {
-    if(!DebuggeeWorker.hasInstance()) return; 
-    DebuggeeWorker.Instance().postMessage({"type":"stepOver"});
+    if(!Debuggee_Worker.hasInstance()) return; 
+    Debuggee_Worker.Instance().postMessage({"type":"stepOver"});
 }
 
 Blocly_Debugger["StepOut"] = () => {
-    if(!DebuggeeWorker.hasInstance()) return; 
-    DebuggeeWorker.Instance().postMessage({"type":"stepOut"});
+    if(!Debuggee_Worker.hasInstance()) return; 
+    Debuggee_Worker.Instance().postMessage({"type":"stepOut"});
 }

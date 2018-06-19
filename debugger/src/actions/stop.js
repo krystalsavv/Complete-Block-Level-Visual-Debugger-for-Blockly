@@ -1,5 +1,5 @@
-import { DebuggeeWorker, Blocly_Debugger} from "../init";
+import { Debuggee_Worker, Blocly_Debugger} from "../init";
 
 Blocly_Debugger["Stop"] = () => {
-    DebuggeeWorker.Stop();
+    Debuggee_Worker.Stop();
 }

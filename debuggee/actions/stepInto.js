@@ -1,11 +1,8 @@
-import {actions, flag, flag_out, flag_over} from "../init.js";
+import {actions, flags, window} from "../init.js";
 
 actions["stepInto"] = () => {
-
-    // require("../init.js").flag_over = false;
-    // require("../init.js").flag = true;
-    flag = true;
-    flag_over = false;
+    flags.in = true;
+    flags.over = false;
 };
 
 function sleep(ms) {
@@ -17,11 +14,11 @@ function next_message() {
 }
   
 export async function stepInto_wait(local_over){
-    if(flag_out==true) return;
+    if(flags.out==true) return;
     else if(local_over==true) return;
     else if(local_over==false){
-        flag = false;
-      while (flag==false) {
+        flags.in = false;
+      while (flags.in == false) {
         await next_message();
       }
     }else{
