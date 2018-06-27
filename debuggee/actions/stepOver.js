@@ -1,8 +1,9 @@
 import {actions, flags} from "../init.js";
 
 actions["stepOver"] = () => {
-  flags.in = true;
-  flags.over = true;
+  flags.stepWait = true;
+  // flags.in = true;
+  // flags.over = true;
 };
 
 export function isStepOver(){

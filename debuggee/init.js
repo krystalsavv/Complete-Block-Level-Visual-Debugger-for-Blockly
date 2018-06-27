@@ -7,6 +7,7 @@ export var window = {
 export var actions = {};
 
 export var flags = {
+  stepWait : true,
   in : true, 
   over : false,
   out : false
