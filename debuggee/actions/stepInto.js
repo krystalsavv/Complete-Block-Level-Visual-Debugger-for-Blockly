@@ -14,7 +14,7 @@ function next_message() {
     return sleep(0); 
 }
   
-async function wait(){
+export async function wait(){
     flags.stepWait = false;
    // highlightBlock(blocksID[currBlock]);
    // ++currBlock;

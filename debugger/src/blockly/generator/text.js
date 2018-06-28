@@ -1,4 +1,4 @@
-import {generation} from './blockly_init.js'; 
+import {generation} from '../blockly_init.js'; 
 
 
 Blockly.JavaScript['text'] = function(block) {
