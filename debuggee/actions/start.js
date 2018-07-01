@@ -10,7 +10,7 @@ var isStepOver = require("./stepOver.js").isStepOver;
 var window = require("../init.js").window;
 
 actions["start_debugging"] = async (content) => {
-    window.alert(content);
+    //window.alert(content);
     if(content!=undefined){
         await eval("async function code(){var local_over=false;var local_out=false; var $;"+ content +" };  code();");
         postMessage({"type": "execution_finished"});
