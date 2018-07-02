@@ -1,51 +1,35 @@
 import {generation} from '../blockly_init.js'; 
 
 Blockly.JavaScript['controls_if'] = function(block) {
-  // Den kanw kapou generation.nest++/--;
+  generation.nest++;
   var n = 0;
-  var args = [];
-   var branchs = [];
-   var tmps = [];
-   var code = '';
-   for(n = 0; n<=block.elseifCount_; ++n){
-    tmps[n] = generation.tmp + generation.tmp_count++;
-  }
-  
-  args[0] = Blockly.JavaScript.valueToCode(block, 'IF' + 0,
+  var argument = Blockly.JavaScript.valueToCode(block, 'IF' + n,
       Blockly.JavaScript.ORDER_NONE) || 'false';
-  branchs[0] = Blockly.JavaScript.statementToCode(block, 'DO' + 0);
-  
+  var branch = Blockly.JavaScript.statementToCode(block, 'DO' + n);
+  var code = argument + 'await wait('+ generation.nest + ', true);\nif (' + generation.tmp + ') {\n' + branch + '}';
   for (n = 1; n <= block.elseifCount_; n++) {
-    args[n] = Blockly.JavaScript.valueToCode(block, 'IF' + n,
+    argument = Blockly.JavaScript.valueToCode(block, 'IF' + n,
         Blockly.JavaScript.ORDER_NONE) || 'false';
-    branchs[n] = Blockly.JavaScript.statementToCode(block, 'DO' + n);
+    branch = Blockly.JavaScript.statementToCode(block, 'DO' + n);
+    code += ' else {\n' + argument + 'if (' + generation.tmp + ') {\n' + branch + '}';
   }
-
-  for(n = 0; n<=block.elseifCount_; ++n){
-    code += args[n] + tmps[n] + ' = ' + generation.tmp + ';\n'; 
-  }
-  code += 'if (' + tmps[0] + ') {\n' + 
-  // '  let local_over = isStepOver();\n' +                              // me
-  branchs[0] + '}';
-  for (n = 1; n <= block.elseifCount_; n++) {
-    code += ' else if (' + tmps[n] + ') {\n' + 
-      // '  let local_over = isStepOver();\n' +                            // me
-      branchs[n] + '}';
-  }
-
   if (block.elseCount_) {
-    var branch = Blockly.JavaScript.statementToCode(block, 'ELSE');
-    code += ' else {\n' +
-    // '  let local_over = isStepOver();\n' +                           // me
-    branch + '}';
+    branch = Blockly.JavaScript.statementToCode(block, 'ELSE');
+    code += ' else {\n' + branch + '}';
   }
-  alert(code);
+
+  for(n = 0; n < block.elseifCount_; ++n){
+    code += '}';
+  }
+  generation.nest--;
   return code + '\n';
+
 };
 
 
 Blockly.JavaScript['logic_compare'] = function(block) {
   // Comparison operator.
+  generation.nest++;
   var OPERATORS = {
     'EQ': '==',
     'NEQ': '!=',
@@ -57,7 +41,6 @@ Blockly.JavaScript['logic_compare'] = function(block) {
   var operator = OPERATORS[block.getFieldValue('OP')];
   var order = (operator == '==' || operator == '!=') ?
       Blockly.JavaScript.ORDER_EQUALITY : Blockly.JavaScript.ORDER_RELATIONAL;
-  generation.nest++;
   var argument0 = Blockly.JavaScript.valueToCode(block, 'A', order) || '0';
   var argument1 = Blockly.JavaScript.valueToCode(block, 'B', order) || '0';
   var tmp0 = generation.tmp + generation.tmp_count++;
@@ -65,14 +48,17 @@ Blockly.JavaScript['logic_compare'] = function(block) {
   var code = argument0 + 'var ' + tmp0 + ' = ' + generation.tmp +';\n' +
          argument1 + 'var ' + tmp1 + ' = ' + generation.tmp +';\n' +
          'await wait(' + generation.nest + ');\n' + 
+         //'if(' + tmp0 + operator + tmp1 + ') ' +  generation.tmp +' = true;\nelse '+  generation.tmp +' = false;\n'
+         //generation.tmp + ' = (' + tmp0 + operator + tmp1 + ') ? true : false;\n' + 
          generation.tmp +' = (' + tmp0 + operator + tmp1 + ');\n';
   generation.nest--;       
-  //var code = argument0 + ' ' + operator + ' ' + argument1;
-  return [code, order];
+  //return [code, order];
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['logic_operation'] = function(block) {
   // Operations 'and', 'or'.
+  generation.nest++;
   var operator = (block.getFieldValue('OP') == 'AND') ? '&&' : '||';
   var order = (operator == '&&') ? Blockly.JavaScript.ORDER_LOGICAL_AND :
       Blockly.JavaScript.ORDER_LOGICAL_OR;
@@ -92,8 +78,16 @@ Blockly.JavaScript['logic_operation'] = function(block) {
       argument1 = defaultArgument;
     }
   }
-  var code = argument0 + ' ' + operator + ' ' + argument1;
-  return [code, order];
+
+  var tmp0 = generation.tmp + generation.tmp_count++;
+  var tmp1 = generation.tmp + generation.tmp_count++;
+  var code = argument0 + 'var ' + tmp0 + ' = ' + generation.tmp +';\n' +
+         argument1 + 'var ' + tmp1 + ' = ' + generation.tmp +';\n' +
+         'await wait(' + generation.nest + ');\n' + 
+         generation.tmp +' = (' + tmp0 + operator + tmp1 + ');\n';
+  //return [code, order];
+  generation.nest--;
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['logic_negate'] = function(block) {

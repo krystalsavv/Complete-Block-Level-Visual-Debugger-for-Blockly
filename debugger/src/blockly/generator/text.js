@@ -1,10 +1,9 @@
 import {generation} from '../blockly_init.js'; 
 
-
 Blockly.JavaScript['text'] = function(block) {
     // Text value.
     generation.nest++;
-    var code = 'await wait(' + generation.nest + ');\n' + generation.tmp + ' = ' + Blockly.JavaScript.quote_(block.getFieldValue('TEXT')) + ';';
+    var code = 'await wait(' + generation.nest + ');\n' + generation.tmp + ' = ' + Blockly.JavaScript.quote_(block.getFieldValue('TEXT')) + ';\n';
     generation.nest--;
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
   };
