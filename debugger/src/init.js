@@ -42,7 +42,10 @@ export var Debuggee_Worker = (function (){
 	function initDispacher(){
 		dispatcher = {                              
 			"alert" : (msg) => {
-				alert(msg);
+				window.alert(msg);
+			},
+			"prompt" : (msg) => {
+				Debuggee_Worker.Instance().postMessage({"type":"prompt","data": window.prompt(msg)}); 
 			},
 			"highlightBlock" : (id) => {
 				window.workspace.traceOn_ = true;

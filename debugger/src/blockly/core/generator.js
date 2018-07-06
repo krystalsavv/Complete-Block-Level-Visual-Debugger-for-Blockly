@@ -1,41 +1,53 @@
-Blockly.Generator.prototype.valueToCode = function(block, name, order) {
-    if (isNaN(order)) {
-      goog.asserts.fail('Expecting valid order from block "%s".', block.type);
-    }
-    var targetBlock = block.getInputTargetBlock(name);
-    if (!targetBlock) {
+import {generation} from '../blockly_init'
+
+
+Blockly.Generator.prototype.blockToCode = function(block) {
+    if (!block) {
       return '';
     }
-    var tuple = this.blockToCode(targetBlock);
-    if (tuple === '') {
-      // Disabled block.
-      return '';
+    if (block.disabled) {
+      // Skip past this block if it is disabled.
+      return this.blockToCode(block.getNextBlock());
     }
-    // Value blocks must return code and order of operations info.
-    // Statement blocks must only return code.
-    goog.asserts.assertArray(tuple, 'Expecting tuple from value block "%s".',
-        targetBlock.type);
-    var code = tuple[0];
-    var innerOrder = tuple[1];
-    if (isNaN(innerOrder)) {
-      goog.asserts.fail('Expecting valid order from value block "%s".',
-          targetBlock.type);
-    }
-    if (code && order <= innerOrder) {
-      if (order == innerOrder && (order == 0 || order == 99)) {
-        // Don't generate parens around NONE-NONE and ATOMIC-ATOMIC pairs.
-        // 0 is the atomic order, 99 is the none order.  No parentheses needed.
-        // In all known languages multiple such code blocks are not order
-        // sensitive.  In fact in Python ('a' 'b') 'c' would fail.
-      } else {
-        // The operators outside this code are stonger than the operators
-        // inside this code.  To prevent the code from being pulled apart,
-        // wrap the code in parentheses.
-        // Technically, this should be handled on a language-by-language basis.
-        // However all known (sane) languages use parentheses for grouping.
-        if(order != 5 && order != 6)                    // for * / % + -
-            code = '(' + code + ')';
+  
+    var func = this[block.type];
+    goog.asserts.assertFunction(func,
+        'Language "%s" does not know how to generate code for block type "%s".',
+        this.name_, block.type);
+    // First argument to func.call is the value of 'this' in the generator.
+    // Prior to 24 September 2013 'this' was the only way to access the block.
+    // The current prefered method of accessing the block is through the second
+    // argument to func.call, which becomes the first parameter to the generator.
+    var my_nest = ++generation.nest;
+    var code = func.call(block, block);
+    generation.nest--;
+    if (goog.isArray(code)) {
+      // Value blocks return tuples of code and operator order.
+      code[0] = 'await $id(await wait(' + my_nest + ', ' + '\'' + block.id + '\'),' + code[0] + ')';
+      return [this.scrub_(block, code[0]), code[1]];
+    } else if (goog.isString(code)) {
+      if (this.STATEMENT_PREFIX) {
+        code = this.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + my_nest + ', \'' + block.id + '\')') +
+            code;
       }
+      return this.scrub_(block, code);
+    } else if (code === null) {
+      // Block has handled code generation itself.
+      return '';
+    } else {
+      goog.asserts.fail('Invalid code generated: %s', code);
     }
-    return code;
   };
+
+
+
+Blockly.Generator.prototype.addLoopTrap = function(branch, id) {
+  if (this.INFINITE_LOOP_TRAP) {
+    branch = this.INFINITE_LOOP_TRAP.replace(/%1/g, '\'' + id + '\'') + branch;
+  }
+  if (this.STATEMENT_PREFIX) {
+    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, generation.nest +
+        ', \'' + id + '\''), this.INDENT);
+  }
+  return branch;
+};

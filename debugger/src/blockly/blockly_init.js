@@ -1,5 +1,5 @@
 export var generation = {
-    tmp : '$',
+    tmp : '$id',
     tmp_count : 0,
     nest : -1
 }

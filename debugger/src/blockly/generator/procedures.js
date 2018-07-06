@@ -1,3 +1,5 @@
+import {generation} from '../blockly_init'
+
 Blockly.JavaScript['procedures_defreturn'] = function(block) {
     // Define a procedure with a return value.
     var funcName = Blockly.JavaScript.variableDB_.getName(
@@ -5,8 +7,8 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
     var branch = Blockly.JavaScript.statementToCode(block, 'STACK');
     if (Blockly.JavaScript.STATEMENT_PREFIX) {
       branch = Blockly.JavaScript.prefixLines(
-          Blockly.JavaScript.STATEMENT_PREFIX.replace(/%1/g,
-          '\'' + block.id + '\''), Blockly.JavaScript.INDENT) + branch;
+          Blockly.JavaScript.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + "0" + ', \'' + block.id + '\')'
+        ), Blockly.JavaScript.INDENT) + branch ;
     }
     if (Blockly.JavaScript.INFINITE_LOOP_TRAP) {
       branch = Blockly.JavaScript.INFINITE_LOOP_TRAP.replace(/%1/g,

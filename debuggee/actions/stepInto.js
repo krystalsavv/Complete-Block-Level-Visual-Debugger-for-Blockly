@@ -5,7 +5,7 @@ actions["stepInto"] = () => {
     flags.stepWait = true;
     flags.currentNest++;
     // flags.in = true;
-    // flags.over = false;
+    // flags.over = false
 };
 
 function sleep(ms) {
@@ -16,27 +16,40 @@ function next_message() {
     return sleep(0); 
 }
 
-var count  = 0 ;
-
-export async function wait(nest, block){
-    count ++;
-    console.log("wait"+ count + ' curr:' + flags.currentNest + ' nest:' + nest);
-    while(flags.currentNest <= nest){
-        if(flags.currentNest == nest && flags.stepWait) {
-            break;
-        }
-        console.log(flags.currentNest);
-        while(!flags.stepWait){
-            await next_message();
-        }
-        flags.stepWait = false;
+export async function wait(nest, block_id){
+    highlightBlock(block_id);
+    while(!flags.stepWait){
+        await next_message();
     }
-    if(flags.currentNest > nest && !block){
-        //if(block) flags.currentNest = nest + 1;
-        flags.currentNest = nest;
-    }
-    console.log("\tout " + flags.currentNest);
+    flags.stepWait = false;
 }
+
+
+function highlightBlock(id){
+    postMessage({"type": "highlightBlock", "data" : id});
+}
+
+//var count  = 0 ;
+
+// export async function wait(nest, block){
+//     count ++;
+//     console.log("wait"+ count + ' curr:' + flags.currentNest + ' nest:' + nest);
+//     while(flags.currentNest <= nest){
+//         if(flags.currentNest == nest && flags.stepWait) {
+//             break;
+//         }
+//         console.log(flags.currentNest);
+//         while(!flags.stepWait){     
+//             await next_message();
+//         }
+//         flags.stepWait = false;
+//     }
+//     if(flags.currentNest > nest && !block){
+//         //if(block) flags.currentNest = nest + 1;
+//         flags.currentNest = nest;
+//     }
+//     console.log("\tout " + flags.currentNest);
+// }
 
 
 
