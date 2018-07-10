@@ -28,10 +28,19 @@ export var actions = {
 };
 
 export var flags = {
-  currentNest : 0,
+  currNest : 0,
+  currId : '',
   promptMsg : undefined,
   stepWait : false,
   in : true, 
   over : false,
-  out : false
+  up : false,
+  out : false,
+  setTrue : (true_flag) =>{
+    flags.in = false;
+    flags.over = false;
+    flags.out = false;
+    flags.up = false;
+    flags[true_flag] = true;
+  }
 }

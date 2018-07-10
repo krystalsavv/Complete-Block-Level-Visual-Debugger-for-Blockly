@@ -1,5 +1,3 @@
-import {generation} from '../blockly_init'
-
 Blockly.JavaScript['procedures_defreturn'] = function(block) {
     // Define a procedure with a return value.
     var funcName = Blockly.JavaScript.variableDB_.getName(
@@ -17,7 +15,9 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
     var returnValue = Blockly.JavaScript.valueToCode(block, 'RETURN',
         Blockly.JavaScript.ORDER_NONE) || '';
     if (returnValue) {
-      returnValue = '  return ' + returnValue + ';\n';
+      returnValue = '  let $returnValue = ' + returnValue + ';\n' + '  flags.currNest = global_nest;\n  flags.up = false;\n' + '  return $returnValue;\n';
+    }else{
+        returnValue = '  flags.currNest = global_nest;\n  flags.up = false;\n' + '  return;\n';
     }
     var args = [];
     for (var x = 0; x < block.arguments_.length; x++) {
@@ -25,8 +25,10 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
           Blockly.Variables.NAME_TYPE);
     }
     var code = 'async function ' + funcName + '(' + args.join(', ') + ') {\n' +
-        '  let local_over = isStepOver();\n  let local_out = isStepOut();\n' +
-        branch + '  if(local_out==false) flag_out = false;\n' + returnValue + '}'; 
+        '  let global_nest = flags.currNest;\n' + 
+        '  if(isStepOver()) flags.currNest = -1;\n' +
+        branch +    
+        returnValue + '}'; 
     code = Blockly.JavaScript.scrub_(block, code);
     Blockly.JavaScript.definitions_[funcName] = code;
     return null;
@@ -61,3 +63,19 @@ Blockly.JavaScript['procedures_callnoreturn'] = function(block) {
     var code = "await " + funcName + '(' + args.join(', ') + ');\n';
     return code;
   };
+
+  Blockly.JavaScript['procedures_ifreturn'] = function(block) {
+  // Conditionally return value from a procedure.
+  var condition = Blockly.JavaScript.valueToCode(block, 'CONDITION',
+      Blockly.JavaScript.ORDER_NONE) || 'false';
+  var code = 'if (' + condition + ') {\n' + '  flags.currNest = global_nest;\n  flags.up = false;\n';
+  if (block.hasReturnValue_) {
+    var value = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_NONE) || 'null';
+    code += '  return ' + value + ';\n';
+  } else {
+    code += '  return;\n';
+  }
+  code += '}\n';
+  return code;
+};

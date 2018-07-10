@@ -46,8 +46,7 @@ Blockly.Generator.prototype.addLoopTrap = function(branch, id) {
     branch = this.INFINITE_LOOP_TRAP.replace(/%1/g, '\'' + id + '\'') + branch;
   }
   if (this.STATEMENT_PREFIX) {
-    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, generation.nest +
-        ', \'' + id + '\''), this.INDENT);
+    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + generation.nest + ', \'' + id + '\')'), this.INDENT);
   }
   return branch;
 };
