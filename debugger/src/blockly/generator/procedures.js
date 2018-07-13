@@ -24,7 +24,7 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
       args[x] = Blockly.JavaScript.variableDB_.getName(block.arguments_[x],
           Blockly.Variables.NAME_TYPE);
     }
-    var code = 'async function ' + funcName + '(' + args.join(', ') + ') {\n' +
+    var code = 'async function ' + funcName + '(' + args.join(', ') + ') {\n' +  
         '  let global_nest = flags.currNest;\n' + 
         '  if(isStepOver()) flags.currNest = -1;\n' +
         branch +    
