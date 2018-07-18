@@ -1,4 +1,4 @@
-import {generation} from '../blockly_init'
+import {generation} from '../blockly_init.js'
 
 
 Blockly.Generator.prototype.blockToCode = function(block) {
@@ -49,4 +49,41 @@ Blockly.Generator.prototype.addLoopTrap = function(branch, id) {
     branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + generation.nest + ', \'' + id + '\')'), this.INDENT);
   }
   return branch;
+};
+
+
+Blockly.Generator.prototype.workspaceToCode = function(workspace) {
+  if (!workspace) {
+    // Backwards compatability from before there could be multiple workspaces.
+    console.warn('No workspace specified in workspaceToCode call.  Guessing.');
+    workspace = Blockly.getMainWorkspace();
+  }
+  var code = [];
+  this.init(workspace);
+  var blocks = workspace.getTopBlocks(true);
+  var line = "\n// start source code of another editor\nCurrentSystemEditorId = '" + workspace.systemEditorId + "';\n";
+  code.push(line);
+  for (var x = 0, block; block = blocks[x]; x++) {
+    line = this.blockToCode(block);
+    if (goog.isArray(line)) {
+      // Value blocks return tuples of code and operator order.
+      // Top-level blocks don't care about operator order.
+      line = line[0];
+    }
+    if (line) {
+      if (block.outputConnection && this.scrubNakedValue) {
+        // This block is a naked value.  Ask the language's code generator if
+        // it wants to append a semicolon, or something.
+        line = this.scrubNakedValue(line);
+      }
+      code.push(line);
+    }
+  }
+  code = code.join('\n');  // Blank line between each section.
+  code = this.finish(code);
+  // Final scrubbing of whitespace.
+  code = code.replace(/^\s+\n/, '');
+  code = code.replace(/\n\s+$/, '\n');
+  code = code.replace(/[ \t]+\n/g, '\n');
+  return code;
 };

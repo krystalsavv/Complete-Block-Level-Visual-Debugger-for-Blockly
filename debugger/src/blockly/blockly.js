@@ -1,5 +1,5 @@
-import './generator/lists';
-import './generator/procedures';
-import './generator/text';
-import './core/generator';
-import './blockly_init';
+import './generator/lists.js';
+import './generator/procedures.js';
+import './generator/text.js';
+import './core/generator.js';
+import './blockly_init.js';

@@ -7,10 +7,12 @@ var isStepOver = require("./stepOver.js").isStepOver;
 var window = require("../init.js").window;
 var flags = require("../init.js").flags;
 
+var CurrentSystemEditorId = null;
+
 actions["start_debugging"] = async (content) => {
     //window.alert(content);
     if(content!=undefined){
-        await eval("async function code(){var local_over=false;var local_out=false; "+ content +" };  code();");
+        await eval("async function code(){ "+ content +" };  code();");
         postMessage({"type": "execution_finished"});
     } else {
         window.alert("The content is undefined.");
@@ -51,5 +53,5 @@ export async function wait(nest, block_id){
 
 
 function highlightBlock(id){
-    postMessage({"type": "highlightBlock", "data" : id});
+    postMessage({"type": "highlightBlock", "data" : {"id" : id, "CurrentSystemEditorId" : CurrentSystemEditorId}});
 }

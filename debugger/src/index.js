@@ -1,4 +1,3 @@
-import './init.js';
 import {Blocly_Debugger} from './init.js';
 import './blockly/blockly.js';
 import './actions/run.js';

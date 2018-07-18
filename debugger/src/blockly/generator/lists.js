@@ -1,5 +1,5 @@
 'use strict';
-import {generation} from '../blockly_init'
+import {generation} from '../blockly_init.js'
 
 Blockly.JavaScript['lists_length'] = function(block) {
     // String or array length.
