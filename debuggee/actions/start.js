@@ -1,7 +1,7 @@
 import {actions} from "../init.js";
 import {isStepIn} from "./stepIn";
 import {isStepOut} from "./stepOut";
-import {isStepUp} from "./stepUp";
+import {isStepParent} from "./stepParent";
 
 var isStepOver = require("./stepOver.js").isStepOver;
 var window = require("../init.js").window;
@@ -36,7 +36,7 @@ export async function wait(nest, block_id){
     if(flags.currNest == -1) return;    // stepOver + stepOut for functions                   
     if(isStepIn() || nest <= flags.currNest){
         if(flags.currId  === block_id) return;
-        if(isStepUp() && nest == flags.currNest) return;
+        if(isStepParent() && nest == flags.currNest) return;
         while(!flags.stepWait){
             await next_message();
         }

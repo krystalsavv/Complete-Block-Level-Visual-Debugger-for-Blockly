@@ -34,13 +34,13 @@ export var flags = {
   stepWait : false,
   in : true, 
   over : false,
-  up : false,
+  parent : false,
   out : false,
   setTrue : (true_flag) =>{
     flags.in = false;
     flags.over = false;
     flags.out = false;
-    flags.up = false;
+    flags.parent = false;
     flags[true_flag] = true;
   }
 }
