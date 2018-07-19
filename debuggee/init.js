@@ -43,4 +43,4 @@ export var flags = {
     flags.parent = false;
     flags[true_flag] = true;
   }
-}
+};

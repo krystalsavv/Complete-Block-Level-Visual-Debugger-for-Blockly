@@ -31,8 +31,8 @@ function next_message() {
     return sleep(0); 
 }
 
-export async function wait(nest, block_id){
-    highlightBlock(block_id);
+export async function wait(nest, block_id, CurrentSystemEditorId){
+    highlightBlock(block_id, CurrentSystemEditorId);
     if(flags.currNest == -1) return;    // stepOver + stepOut for functions                   
     if(isStepIn() || nest <= flags.currNest){
         if(flags.currId  === block_id) return;
@@ -52,6 +52,6 @@ export async function wait(nest, block_id){
 }
 
 
-function highlightBlock(id){
+function highlightBlock(id, CurrentSystemEditorId){
     postMessage({"type": "highlightBlock", "data" : {"id" : id, "CurrentSystemEditorId" : CurrentSystemEditorId}});
 }

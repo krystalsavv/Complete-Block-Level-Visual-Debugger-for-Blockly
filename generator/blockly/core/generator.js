@@ -1,6 +1,5 @@
 import {generation} from '../blockly_init.js'
 
-
 Blockly.Generator.prototype.blockToCode = function(block) {
     if (!block) {
       return '';
@@ -23,11 +22,11 @@ Blockly.Generator.prototype.blockToCode = function(block) {
     generation.nest--;
     if (goog.isArray(code)) {
       // Value blocks return tuples of code and operator order.
-      code[0] = 'await $id(await wait(' + my_nest + ', ' + '\'' + block.id + '\'),' + code[0] + ')';
+      code[0] = 'await $id(await wait(' + my_nest + ', ' + '\'' + block.id + '\', \''+ generation.currentSystemEditorId + '\'),' + code[0] + ')';
       return [this.scrub_(block, code[0]), code[1]];
     } else if (goog.isString(code)) {
       if (this.STATEMENT_PREFIX) {
-        code = this.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + my_nest + ', \'' + block.id + '\')') +
+        code = this.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + my_nest + ', \'' + block.id + '\', \''+ generation.currentSystemEditorId + '\')') +
             code;
       }
       return this.scrub_(block, code);
@@ -46,7 +45,7 @@ Blockly.Generator.prototype.addLoopTrap = function(branch, id) {
     branch = this.INFINITE_LOOP_TRAP.replace(/%1/g, '\'' + id + '\'') + branch;
   }
   if (this.STATEMENT_PREFIX) {
-    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + generation.nest + ', \'' + id + '\')'), this.INDENT);
+    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, 'await wait(' + generation.nest + ', \'' + id + '\', \''+ generation.currentSystemEditorId + '\')'), this.INDENT);
   }
   return branch;
 };
@@ -61,7 +60,9 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
   var code = [];
   this.init(workspace);
   var blocks = workspace.getTopBlocks(true);
-  var line = "\n// start source code of another editor\nCurrentSystemEditorId = '" + workspace.systemEditorId + "';\n";
+  generation.currentSystemEditorId = workspace.systemEditorId;
+  var line = "\n// start source code of another editor\n";
+  // var line = "\n// start source code of another editor\nCurrentSystemEditorId = '" + workspace.systemEditorId + "';\n";
   code.push(line);
   for (var x = 0, block; block = blocks[x]; x++) {
     line = this.blockToCode(block);

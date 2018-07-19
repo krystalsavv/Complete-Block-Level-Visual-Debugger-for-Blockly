@@ -12,5 +12,5 @@ window.workspace["blockly2"] = Blockly.inject('blocklyDiv2',
 	 toolbox: document.getElementById('toolbox')});
 window.workspace["blockly2"].systemEditorId = 'blockly2';	 
 
-// Blockly.Xml.domToWorkspace(window.workspace["blockly2"],
-// 	document.getElementById('startBlocks'));
+ Blockly.Xml.domToWorkspace(window.workspace["blockly2"],
+ 	document.getElementById('startBlocks'));
