@@ -17,9 +17,9 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
     var returnValue = Blockly.JavaScript.valueToCode(block, 'RETURN',
         Blockly.JavaScript.ORDER_NONE) || '';
     if (returnValue) {
-      returnValue = '  let $returnValue = ' + returnValue + ';\n' + '  flags.currNest = global_nest;\n  flags.parent = false;\n' + '  return $returnValue;\n';
+      returnValue = '  let $returnValue = ' + returnValue + ';\n' + '  if(flags.currNest != -1) flags.parent = false;\n  flags.currNest = global_nest;\n' + '  return $returnValue;\n';
     }else{
-        returnValue = '  flags.currNest = global_nest;\n  flags.parent = false;\n' + '  return;\n';
+        returnValue = '  if(flags.currNest != -1) flags.parent = false;\n  flags.currNest = global_nest;\n' + '  return;\n';
     }
     var args = [];
     for (var x = 0; x < block.arguments_.length; x++) {
@@ -28,7 +28,7 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
     }
     var code = 'async function ' + funcName + '(' + args.join(', ') + ') {\n' +  
         '  let global_nest = flags.currNest;\n' + 
-        '  if(isStepOver()) flags.currNest = -1;\n' +
+        '  if(isStepOver() || isStepParent()) flags.currNest = -1;\n' +
         branch +    
         returnValue + '}'; 
     code = Blockly.JavaScript.scrub_(block, code);

@@ -1,18 +1,17 @@
 import {actions} from "../init.js";
 import {isStepIn} from "./stepIn";
 import {isStepOut} from "./stepOut";
-import {isStepParent} from "./stepParent";
 
 var isStepOver = require("./stepOver.js").isStepOver;
+var isStepParent = require("./stepParent.js").isStepParent;
 var window = require("../init.js").window;
 var flags = require("../init.js").flags;
-
-var CurrentSystemEditorId = null;
 
 actions["start_debugging"] = async (content) => {
     //window.alert(content);
     if(content!=undefined){
         await eval("async function code(){ "+ content +" };  code();");
+        await eval(content);
         postMessage({"type": "execution_finished"});
     } else {
         window.alert("The content is undefined.");
