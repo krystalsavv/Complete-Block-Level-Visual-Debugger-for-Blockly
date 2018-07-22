@@ -36,11 +36,13 @@ export var flags = {
   over : false,
   parent : false,
   out : false,
+  continue: false,
   setTrue : (true_flag) =>{
     flags.in = false;
     flags.over = false;
     flags.out = false;
     flags.parent = false;
+    flags.continue = false;
     flags[true_flag] = true;
   }
 };

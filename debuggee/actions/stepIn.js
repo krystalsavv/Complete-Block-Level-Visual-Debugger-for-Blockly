@@ -1,4 +1,4 @@
-import {actions, flags, window, my_var} from "../init.js";
+import {actions, flags, window} from "../init.js";
 
 
 actions["stepIn"] = () => {
