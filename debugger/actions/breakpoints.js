@@ -1,8 +1,12 @@
 import {Debuggee_Worker, Blocly_Debugger} from '../init.js';
 
-export var breakpoints = [];
+Blocly_Debugger["Breakpoint"] = {};
 
-Blocly_Debugger["Breakpoint"] = (block_id) => {
+Blocly_Debugger["Breakpoint"].handler = () => {
     if(!Debuggee_Worker.hasInstance()) return; 
-    Debuggee_Worker.Instance().postMessage({"type":"breakpoint", "data":breakpoints});
+    //console.log(locly_Debugger["Breakpoint"].breakpoints);
+    Debuggee_Worker.Instance().postMessage({"type":"breakpoint", "data": Blocly_Debugger["Breakpoint"].breakpoints});
 }
+
+
+Blocly_Debugger["Breakpoint"].breakpoints = [];
