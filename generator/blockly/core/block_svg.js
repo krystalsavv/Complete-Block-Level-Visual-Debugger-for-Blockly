@@ -1,4 +1,4 @@
-import {breakpoints} from '../blockly_init.js';
+import {Blocly_Debugger, breakpoints} from '../../../debugger/debugger.js';
 
 Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
     if (this.workspace.options.readOnly || !this.contextMenu) {
@@ -111,6 +111,25 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
       menuOptions.push(deleteOption);
     }
   
+
+    // Breakpoints
+    var breakpointOption = {
+      text: (!breakpoints.includes(block.id)) ? "Add Breakpoint" : "Remove Breakpoint",
+      enabled: true,
+      callback: function() {
+          if(!breakpoints.includes(block.id)) {
+            breakpoints.push(block.id);
+            block.setCollapsed(false);                                  // expand the block if it is collapted 
+          } else {
+            var index = breakpoints.indexOf(block.id);
+            if (index !== -1) breakpoints.splice(index, 1)
+          }
+          Blocly_Debugger["Breakpoint"](breakpoints);
+        }
+    };
+    menuOptions.push(breakpointOption);
+
+
     // Option to get help.
     var url = goog.isFunction(this.helpUrl) ? this.helpUrl() : this.helpUrl;
     var helpOption = {enabled: !!url};
@@ -119,19 +138,6 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
       block.showHelp_();
     };
     menuOptions.push(helpOption);
-  
-
-    var breakpointOption = {
-        text: "Breakpoint",
-        enabled: true,
-        callback: function() {
-            //alert("Breakpoint!   " + block.id);
-            if(!breakpoints.includes(block.id)) breakpoints.push(block.id);
-            alert("Breakpoint!   " + block.id + "\n " + breakpoints);
-        }
-      };
-       menuOptions.push(breakpointOption);
-
     
     // Allow the block to add or modify menuOptions.
     if (this.customContextMenu && !block.isInFlyout) {

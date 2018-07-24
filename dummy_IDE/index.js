@@ -3,7 +3,7 @@ import '../debugger/debugger.js';
 import '../generator/blockly/blockly.js';
 import {Blocly_Debugger} from '../debugger/debugger.js';
 
-document.getElementById("RunButton").onclick = Blocly_Debugger["Run"];
+document.getElementById("ContinueButton").onclick = Blocly_Debugger["Continue"];
 document.getElementById("StepInButton").onclick = Blocly_Debugger["StepIn"];
 document.getElementById("StepOverButton").onclick = Blocly_Debugger["StepOver"];
 document.getElementById("StepParentButton").onclick = Blocly_Debugger["StepParent"];

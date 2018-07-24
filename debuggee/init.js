@@ -32,11 +32,11 @@ export var flags = {
   currId : '',
   promptMsg : undefined,
   stepWait : false,
-  in : true, 
+  in : false, 
   over : false,
   parent : false,
   out : false,
-  continue: false,
+  continue: true,
   setTrue : (true_flag) =>{
     flags.in = false;
     flags.over = false;

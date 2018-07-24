@@ -1,5 +1,5 @@
 import {Debuggee_Worker, Blocly_Debugger} from '../init.js';
-
+import {breakpoints} from './breakpoints.js';
 // function addCode(js){                                // gia na kanw debug to eval 
 //     var e = document.createElement('script');
 //     e.type = 'text/javascript';
@@ -15,6 +15,7 @@ Blocly_Debugger["Start"] = () => {
     var code = code1 + code2;
     // var code = "async function code(){\n" + code1 + code2 +" };\ncode();";
     // addCode(code);
-    Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": code});
+    Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": {"code": code, 
+                                                                               "breakpoints": breakpoints}});
     console.log(code1 + code2);
 }
