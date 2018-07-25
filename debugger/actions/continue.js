@@ -1,7 +1,7 @@
-import {Debuggee_Worker, Blocly_Debugger} from '../init.js';
+import {Debuggee_Worker, Blockly_Debugger} from '../init.js';
 
-Blocly_Debugger["Continue"] = {};
+Blockly_Debugger.actions["Continue"] = {};
 
-Blocly_Debugger["Continue"].handler = () => {
+Blockly_Debugger.actions["Continue"].handler = () => {
     Debuggee_Worker.Instance().postMessage({"type":"continue"});
 }

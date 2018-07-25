@@ -1,7 +1,7 @@
-import { Debuggee_Worker, Blocly_Debugger} from "../init.js";
+import { Debuggee_Worker, Blockly_Debugger} from "../init.js";
 
-Blocly_Debugger["Stop"] = {};
+Blockly_Debugger.actions["Stop"] = {};
 
-Blocly_Debugger["Stop"].handler = () => {
+Blockly_Debugger.actions["Stop"].handler = () => {
     Debuggee_Worker.Stop();
 }

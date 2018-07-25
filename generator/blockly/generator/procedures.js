@@ -17,9 +17,9 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
     var returnValue = Blockly.JavaScript.valueToCode(block, 'RETURN',
         Blockly.JavaScript.ORDER_NONE) || '';
     if (returnValue) {
-      returnValue = '  let $returnValue = ' + returnValue + ';\n' + '  if(flags.currNest != -1) flags.parent = false;\n  flags.currNest = global_nest;\n' + '  return $returnValue;\n';
+      returnValue = '  let $returnValue = ' + returnValue + ';\n' + '  if(Blockly_debuggee.state.currNest != -1) Blockly_debuggee.state.currState.parent = false;\n  Blockly_debuggee.state.currNest = global_nest;\n' + '  return $returnValue;\n';
     }else{
-        returnValue = '  if(flags.currNest != -1) flags.parent = false;\n  flags.currNest = global_nest;\n' + '  return;\n';
+        returnValue = '  if(Blockly_debuggee.state.currNest != -1) Blockly_debuggee.state.currState.parent = false;\n  Blockly_debuggee.state.currNest = global_nest;\n' + '  return;\n';
     }
     var args = [];
     for (var x = 0; x < block.arguments_.length; x++) {
@@ -27,8 +27,8 @@ Blockly.JavaScript['procedures_defreturn'] = function(block) {
           Blockly.Variables.NAME_TYPE);
     }
     var code = 'async function ' + funcName + '(' + args.join(', ') + ') {\n' +  
-        '  let global_nest = flags.currNest;\n' + 
-        '  if(isStepOver() || isStepParent()) flags.currNest = -1;\n' +
+        '  let global_nest = Blockly_debuggee.state.currNest;\n' + 
+        '  if(isStepOver() || isStepParent()) Blockly_debuggee.state.currNest = -1;\n' +
         branch +    
         returnValue + '}'; 
     code = Blockly.JavaScript.scrub_(block, code);
@@ -70,7 +70,7 @@ Blockly.JavaScript['procedures_callnoreturn'] = function(block) {
   // Conditionally return value from a procedure.
   var condition = Blockly.JavaScript.valueToCode(block, 'CONDITION',
       Blockly.JavaScript.ORDER_NONE) || 'false';
-  var code = 'if (' + condition + ') {\n' + '  flags.currNest = global_nest;\n  flags.parent = false;\n';
+  var code = 'if (' + condition + ') {\n' + '  Blockly_debuggee.state.currNest = global_nest;\n  Blockly_debuggee.state.currState.parent = false;\n';
   if (block.hasReturnValue_) {
     var value = Blockly.JavaScript.valueToCode(block, 'VALUE',
         Blockly.JavaScript.ORDER_NONE) || 'null';

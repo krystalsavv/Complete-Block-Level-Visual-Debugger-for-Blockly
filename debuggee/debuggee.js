@@ -1,8 +1,8 @@
-import {actions} from "./init.js";
+import "./init.js";
+import {dispatcher} from "./init.js";
 import './actions/actions.js';
 
 onmessage = function (msg) {
     let obj = msg.data;
-    actions[obj.type](obj.data);
+    dispatcher[obj.type](obj.data);
 }
-

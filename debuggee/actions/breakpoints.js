@@ -1,14 +1,27 @@
-import {actions} from "../init.js";
+import {Blockly_Debuggee, dispatcher} from '../init.js';
 
-actions["breakpoint"] = (br) => {
-    breakpoints = br;
-   // console.log(breakpoints);
-};
-export var breakpoints = [];
-export function hasBreakpoint(block_id){
-    return breakpoints.includes(block_id);
-}
+Blockly_Debuggee.actions.breakpoint = {};
 
-export function updateBreakpoints(updated){
-    breakpoints = updated;
-}
+Blockly_Debuggee.actions.breakpoint = (function(){
+    var breakpoints = [];
+    function handler(br){
+        breakpoints = br;
+    };
+
+    function includes(block_id){
+        return breakpoints.includes(block_id);
+    };
+    
+    function update(updated){
+        breakpoints = updated;
+    };
+
+    return {
+        handler : handler,
+        includes: includes,
+        update : update
+    };
+
+})();
+
+dispatcher.breakpoint = Blockly_Debuggee.actions["breakpoint"].handler;

@@ -1,4 +1,4 @@
-import {Debuggee_Worker, Blocly_Debugger} from '../init.js';
+import {Debuggee_Worker, Blockly_Debugger} from '../init.js';
 
 // function addCode(js){                                // gia na kanw debug to eval 
 //     var e = document.createElement('script');
@@ -7,9 +7,9 @@ import {Debuggee_Worker, Blocly_Debugger} from '../init.js';
 //     document.head.appendChild(e);
 // }
 
-Blocly_Debugger["Start"] = {};
+Blockly_Debugger.actions["Start"] = {};
 
-Blocly_Debugger["Start"].handler = () => {
+Blockly_Debugger.actions["Start"].handler = () => {
     if(Debuggee_Worker.hasInstance()) return;  
     Blockly.JavaScript.STATEMENT_PREFIX = 'await $id(%1, 0);\n';
     var code1 = Blockly.JavaScript.workspaceToCode(window.workspace["blockly1"]);
@@ -18,6 +18,6 @@ Blocly_Debugger["Start"].handler = () => {
     // var code = "async function code(){\n" + code1 + code2 +" };\ncode();";
     // addCode(code);
     Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": {"code": code, 
-                                                                               "breakpoints": Blocly_Debugger["Breakpoint"].breakpoints}});
+                                                                               "breakpoints": Blockly_Debugger.actions["Breakpoint"].breakpoints}});
     console.log(code1 + code2);
 }

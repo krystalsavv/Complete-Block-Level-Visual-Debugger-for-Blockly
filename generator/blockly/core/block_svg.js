@@ -1,4 +1,4 @@
-import {Blocly_Debugger} from '../../../debugger/debugger.js';
+import {Blockly_Debugger} from '../../../debugger/debugger.js';
 
 Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
     if (this.workspace.options.readOnly || !this.contextMenu) {
@@ -114,18 +114,18 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
 
     // Breakpoints
     var breakpointOption = {
-      text: (!Blocly_Debugger["Breakpoint"].breakpoints.includes(block.id)) ? "Add Breakpoint" : "Remove Breakpoint",
+      text: (!Blockly_Debugger.actions["Breakpoint"].breakpoints.includes(block.id)) ? "Add Breakpoint" : "Remove Breakpoint",
       enabled: true,
       callback: function() {
-          if(!Blocly_Debugger["Breakpoint"].breakpoints.includes(block.id)) {
-            Blocly_Debugger["Breakpoint"].breakpoints.push(block.id);
+          if(!Blockly_Debugger.actions["Breakpoint"].breakpoints.includes(block.id)) {
+            Blockly_Debugger.actions["Breakpoint"].breakpoints.push(block.id);
             block.setCollapsed(false);                                  // expand the block if it is collapted 
           } else {
-            var index = Blocly_Debugger["Breakpoint"].breakpoints.indexOf(block.id);
-            if (index !== -1) Blocly_Debugger["Breakpoint"].breakpoints.splice(index, 1)
+            var index = Blockly_Debugger.actions["Breakpoint"].breakpoints.indexOf(block.id);
+            if (index !== -1) Blockly_Debugger.actions["Breakpoint"].breakpoints.splice(index, 1)
           }
-          Blocly_Debugger["Breakpoint"].handler();
-          alert("Selected: " + block.id + "\n breakpoints: " + Blocly_Debugger["Breakpoint"].breakpoints);
+          Blockly_Debugger.actions["Breakpoint"].handler();
+          alert("Selected: " + block.id + "\n breakpoints: " + Blockly_Debugger.actions["Breakpoint"].breakpoints);
         }
     };
     menuOptions.push(breakpointOption);

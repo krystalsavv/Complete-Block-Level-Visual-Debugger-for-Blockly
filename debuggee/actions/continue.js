@@ -1,10 +1,10 @@
-import {actions, flags} from "../init.js";
+import {Blockly_Debuggee, dispatcher} from '../init.js';
 
-actions["continue"] = (content) => {
-    flags.stepWait = true;
-    flags.setTrue("continue");
+Blockly_Debuggee.actions.continue = {};
+
+Blockly_Debuggee.actions.continue.handler = () => {
+  Blockly_Debuggee.state.stepWait = true;
+  Blockly_Debuggee.state.setState("continue");
 };
 
-export function isContinue(){
-  return flags.continue; 
-}
+dispatcher.continue = Blockly_Debuggee.actions["continue"].handler;

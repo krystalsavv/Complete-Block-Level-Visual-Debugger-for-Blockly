@@ -60,4 +60,5 @@ export var Debuggee_Worker = (function (){
 
 })();
 
-export var Blocly_Debugger = {};
+export var Blockly_Debugger = {};
+Blockly_Debugger.actions = {};
