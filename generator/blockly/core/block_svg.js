@@ -130,6 +130,17 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
     };
     menuOptions.push(breakpointOption);
 
+    // Run to cursor
+    var runToCursorOption = {
+      text: "Run to cursor",
+      enabled: true,
+      callback: function() {
+        Blockly_Debugger.actions["RunToCursor"].handler(block.id);
+       // window.alert("Run to cursor   " + block.id);
+      }
+    };
+    menuOptions.push(runToCursorOption);
+
 
     // Option to get help.
     var url = goog.isFunction(this.helpUrl) ? this.helpUrl() : this.helpUrl;

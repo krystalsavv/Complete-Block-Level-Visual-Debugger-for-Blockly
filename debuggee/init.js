@@ -57,13 +57,17 @@ Blockly_Debuggee.wait = (function(){
 
   async function wait(nest, block_id, CurrentSystemEditorId){
     highlightBlock(block_id, CurrentSystemEditorId);
-    if(Blockly_Debuggee.state.isState("continue") && !Blockly_Debuggee.actions.breakpoint.includes(block_id)){    
+    var hasBreakpoint = Blockly_Debuggee.actions.breakpoint.includes(block_id) || (Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint === block_id);
+    if(Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint !== "" ){
+      console.log("!!! " + Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint);
+    }
+    if(Blockly_Debuggee.state.isState("continue") && !hasBreakpoint){    
       return;
     }
-    if(Blockly_Debuggee.state.currNest == -1) return;    // stepOver + stepOut for functions                   
-      if(Blockly_Debuggee.state.isState("stepIn") || Blockly_Debuggee.state.isState("continue") || nest <= Blockly_Debuggee.state.currNest){
-        if(Blockly_Debuggee.state.currId  === block_id && !Blockly_Debuggee.state.isState("continue")) return;
-        if(Blockly_Debuggee.state.isState("stepParent") && nest == Blockly_Debuggee.state.currNest) return;
+    if(Blockly_Debuggee.state.currNest == -1 && !hasBreakpoint) return;    // stepOver + stepOut for functions                   
+      if(Blockly_Debuggee.state.isState("stepIn") || hasBreakpoint || nest <= Blockly_Debuggee.state.currNest){
+        if(Blockly_Debuggee.state.currId  === block_id && !hasBreakpoint) return;
+        if(Blockly_Debuggee.state.isState("stepParent") && nest == Blockly_Debuggee.state.currNest && !hasBreakpoint) return;
         while(!Blockly_Debuggee.state.stepWait){
             await next_message();
         }

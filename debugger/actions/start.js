@@ -9,7 +9,7 @@ import {Debuggee_Worker, Blockly_Debugger} from '../init.js';
 
 Blockly_Debugger.actions["Start"] = {};
 
-Blockly_Debugger.actions["Start"].handler = () => {
+Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     if(Debuggee_Worker.hasInstance()) return;  
     Blockly.JavaScript.STATEMENT_PREFIX = 'await $id(%1, 0);\n';
     var code1 = Blockly.JavaScript.workspaceToCode(window.workspace["blockly1"]);
@@ -17,7 +17,10 @@ Blockly_Debugger.actions["Start"].handler = () => {
     var code = code1 + code2;
     // var code = "async function code(){\n" + code1 + code2 +" };\ncode();";
     // addCode(code);
+    if(cursorBreakpoint === undefined) cursorBreakpoint = "";
     Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": {"code": code, 
-                                                                               "breakpoints": Blockly_Debugger.actions["Breakpoint"].breakpoints}});
+                                                                               "breakpoints": Blockly_Debugger.actions["Breakpoint"].breakpoints,
+                                                                               "cursorBreakpoint": cursorBreakpoint
+                                                                            }});
     console.log(code1 + code2);
 }

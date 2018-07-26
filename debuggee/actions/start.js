@@ -1,12 +1,13 @@
 import '../init.js';
 import {dispatcher} from '../init.js';
-var Blockly_debuggee = require("../init.js").Blockly_Debuggee;
+var Blockly_Debuggee = require("../init.js").Blockly_Debuggee;
 var window = require("../init.js").window;
 
-Blockly_debuggee.actions.start_debugging = (function (){
+Blockly_Debuggee.actions.start_debugging = (function (){
     async function handler(content){
         if(content!=undefined){        
-            Blockly_debuggee.actions.breakpoint.update(content.breakpoints);
+            Blockly_Debuggee.actions.breakpoint.update(content.breakpoints);
+            Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint = content.cursorBreakpoint;
             await eval("async function code(){ "+ content.code +" };  code();");
             postMessage({"type": "execution_finished"});
         } else {
@@ -19,16 +20,16 @@ Blockly_debuggee.actions.start_debugging = (function (){
     };
 
     async function wait(nest, block_id, CurrentSystemEditorId){
-        await Blockly_debuggee.wait(nest, block_id, CurrentSystemEditorId);
+        await Blockly_Debuggee.wait(nest, block_id, CurrentSystemEditorId);
     };
 
     function isStepOver(){
-        return Blockly_debuggee.state.isState("stepOver");
+        return Blockly_Debuggee.state.isState("stepOver");
     };
 
 
     function isStepParent(){
-        return Blockly_debuggee.state.isState("stepParent");
+        return Blockly_Debuggee.state.isState("stepParent");
     };
 
     return {
@@ -37,4 +38,4 @@ Blockly_debuggee.actions.start_debugging = (function (){
 })();
 
 
-dispatcher.start_debugging = Blockly_debuggee.actions["start_debugging"].handler;
+dispatcher.start_debugging = Blockly_Debuggee.actions["start_debugging"].handler;
