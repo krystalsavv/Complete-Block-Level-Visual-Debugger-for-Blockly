@@ -17,7 +17,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     var code = code1 + code2;
     // var code = "async function code(){\n" + code1 + code2 +" };\ncode();";
     // addCode(code);
-    if(cursorBreakpoint === undefined) cursorBreakpoint = "";
+    if(cursorBreakpoint instanceof MouseEvent) cursorBreakpoint = "";
     Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": {"code": code, 
                                                                                "breakpoints": Blockly_Debugger.actions["Breakpoint"].breakpoints,
                                                                                "cursorBreakpoint": cursorBreakpoint
