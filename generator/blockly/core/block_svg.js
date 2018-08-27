@@ -142,6 +142,18 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
     menuOptions.push(runToCursorOption);
 
 
+    // Add/Remove watch
+    var watchOption = {
+      text: "Add watch",
+      enabled: (block.type==="variables_set" || block.type==="variables_get") ? true : false,
+      //enabled: true,
+      callback: function(){
+        alert(block.id + "   " + block.getVars());
+      }
+    }
+
+    menuOptions.push(watchOption);
+
     // Option to get help.
     var url = goog.isFunction(this.helpUrl) ? this.helpUrl() : this.helpUrl;
     var helpOption = {enabled: !!url};

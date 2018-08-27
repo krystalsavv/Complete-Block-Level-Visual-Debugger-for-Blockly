@@ -1,0 +1,67 @@
+#action_bar{
+    background-color: rgba(55, 55, 63, 0.986);
+    /*width: 10cm;*/
+    
+}
+
+/*button{
+    background-color: rgba(55, 55, 63, 0.986);
+    border: none;
+    color: aliceblue;
+    cursor: pointer;
+    transition-duration: 0.4s; 
+    padding: 1mm;
+
+}*/
+
+button {
+    /*background-color: rgba(55, 55, 63, 0.986); /* Green #4CAF50*/
+    background-color: rgba(126, 120, 128, 0.986);
+    border: none;
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    float: left;
+}
+
+button:hover {
+    background-color: rgba(218, 212, 219, 0.986);
+    /*background-color: rgba(84, 84, 97, 0.986);*/
+}
+
+#watch {
+    background-color: #4CAF50;
+    margin: 20px 20px;
+    float: right;
+    width: 40%;
+    height: 200px;
+    
+}
+
+.watch-content{
+    background-color: rgba(218, 212, 219, 0.986);
+    padding: 5px 5px;
+    font-size: 16px; 
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    background-color: rgba(126, 120, 128, 0.986);
+    padding: 5px 5px;
+    width: 100%;
+
+    color: aliceblue;
+    font-size: 18px;    
+    
+}
+
+
+.title.icon {
+  
+  }
