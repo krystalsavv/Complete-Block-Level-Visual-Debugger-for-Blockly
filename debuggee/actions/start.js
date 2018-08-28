@@ -6,8 +6,9 @@ var window = require("../init.js").window;
 Blockly_Debuggee.actions.start_debugging = (function (){
     async function handler(content){
         if(content!=undefined){        
-            Blockly_Debuggee.actions.breakpoint.update(content.breakpoints);
+            Blockly_Debuggee.actions["breakpoint"].update(content.breakpoints);
             Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint = content.cursorBreakpoint;
+            Blockly_Debuggee.actions["watch"].update(content.watches);
             await eval("async function code(){ "+ content.code +" };  code();");
             postMessage({"type": "execution_finished"});
         } else {
@@ -39,3 +40,5 @@ Blockly_Debuggee.actions.start_debugging = (function (){
 
 
 dispatcher.start_debugging = Blockly_Debuggee.actions["start_debugging"].handler;
+
+

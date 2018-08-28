@@ -20,7 +20,8 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     if(cursorBreakpoint instanceof MouseEvent) cursorBreakpoint = "";
     Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": {"code": code, 
                                                                                "breakpoints": Blockly_Debugger.actions["Breakpoint"].breakpoints,
-                                                                               "cursorBreakpoint": cursorBreakpoint
+                                                                               "cursorBreakpoint": cursorBreakpoint,
+                                                                               "watches": Blockly_Debugger.actions["Watch"].watches
                                                                             }});
     console.log(code1 + code2);
 }

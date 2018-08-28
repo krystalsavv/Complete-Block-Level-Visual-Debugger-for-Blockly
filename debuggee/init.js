@@ -57,9 +57,16 @@ Blockly_Debuggee.wait = (function(){
 
   async function wait(nest, block_id, CurrentSystemEditorId){
     highlightBlock(block_id, CurrentSystemEditorId);
+
+    // call funtion to update watches value
+    
+    var code = (Blockly_Debuggee.actions["watch"].update_values());
+    console.log(code);
+    eval(code);
+
     var hasBreakpoint = Blockly_Debuggee.actions.breakpoint.includes(block_id) || (Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint === block_id);
     // if(Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint !== "" ){
-    //   console.log("!!! " + Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint);
+    //   console.log(Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint);
     // }
     if(Blockly_Debuggee.state.isState("continue") && !hasBreakpoint){ 
       Blockly_Debuggee.state.currNest = nest;   
