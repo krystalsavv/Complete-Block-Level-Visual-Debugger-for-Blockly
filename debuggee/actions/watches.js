@@ -1,6 +1,8 @@
 import {Blockly_Debuggee, dispatcher} from '../init.js';
 
 Blockly_Debuggee.actions["watch"] = {};
+Blockly_Debuggee.actions["variables"] = {};
+
 
 Blockly_Debuggee.actions["watch"] = (function(){
     var watches = [];
@@ -28,13 +30,50 @@ Blockly_Debuggee.actions["watch"] = (function(){
         // console.log(code);
         // eval(code);
     }
+
     return {
         handler : handler,
         includes: includes,
         update : update,
-        update_values : update_values
+        update_values : update_values,
+        watches : watches
     };
 
 })();
+
+
+Blockly_Debuggee.actions["variables"] = (function(){
+    var variables = [];
+    function update(new_vars){
+        variables = new_vars;
+        console.log(variables);
+    };
+
+
+    var count = 0;
+    function update_values(){
+        var code = '';
+        for(var i=0; i<variables.length; ++i){
+           // code += 'var ' + variables[i].name + ';\n';
+            code += 'variables[' + i + '].value = ' + variables[i].name + ';\n';
+            code += 'console.log(' + variables[i].name +');\n'
+        }
+        console.log("count:  " + ++count);
+        console.log(variables);
+
+        return code;
+    }
+    
+    function getVariables(){
+        return variables;
+    }
+    
+    return {
+        update : update,
+        update_values : update_values,
+        getVariables : getVariables
+    }
+})();
+
 
 dispatcher.watch = Blockly_Debuggee.actions["watch"].handler;

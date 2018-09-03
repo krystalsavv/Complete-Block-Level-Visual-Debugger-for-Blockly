@@ -42,7 +42,7 @@
           A resize handler keeps it in position as the page changes.
         </p>
 
-        <p>&rarr; More info on <a href="https://developers.google.com/blockly/installation/injecting-resizable">injecting resizable Blockly</a>...</p>
+        <p>&rarr; More info on <a href="https://developers.google.com/blockly/guides/configure/web/resizable">injecting resizable Blockly</a>&hellip;</p>
       </td>
     </tr>
     <tr>
@@ -57,7 +57,9 @@
     <block type="controls_if"></block>
     <block type="logic_compare"></block>
     <block type="controls_repeat_ext"></block>
-    <block type="math_number"></block>
+    <block type="math_number">
+      <field name="NUM">123</field>
+    </block>
     <block type="math_arithmetic"></block>
     <block type="text"></block>
     <block type="text_print"></block>
@@ -66,7 +68,7 @@
   <script>
     var blocklyArea = document.getElementById('blocklyArea');
     var blocklyDiv = document.getElementById('blocklyDiv');
-    var workspace = Blockly.inject(blocklyDiv,
+    var demoWorkspace = Blockly.inject(blocklyDiv,
         {media: '../../media/',
          toolbox: document.getElementById('toolbox')});
     var onresize = function(e) {
@@ -87,6 +89,7 @@
     };
     window.addEventListener('resize', onresize, false);
     onresize();
+    Blockly.svgResize(demoWorkspace);
   </script>
 </body>
 </html>

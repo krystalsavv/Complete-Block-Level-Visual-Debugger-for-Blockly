@@ -26,6 +26,7 @@
 
 goog.provide('Blockly.ZoomControls');
 
+goog.require('Blockly.Touch');
 goog.require('goog.dom');
 
 
@@ -92,86 +93,16 @@ Blockly.ZoomControls.prototype.top_ = 0;
  * @return {!Element} The zoom controls SVG group.
  */
 Blockly.ZoomControls.prototype.createDom = function() {
-  var workspace = this.workspace_;
-  /* Here's the markup that will be generated:
-  <g class="blocklyZoom">
-    <clippath id="blocklyZoomoutClipPath837493">
-      <rect width="32" height="32" y="77"></rect>
-    </clippath>
-    <image width="96" height="124" x="-64" y="-15" xlink:href="media/sprites.png">
-        clip-path="url(#blocklyZoomoutClipPath837493)"></image>
-    <clippath id="blocklyZoominClipPath837493">
-      <rect width="32" height="32" y="43"></rect>
-    </clippath>
-    <image width="96" height="124" x="-32" y="-49" xlink:href="media/sprites.png">
-        clip-path="url(#blocklyZoominClipPath837493)"></image>
-    <clippath id="blocklyZoomresetClipPath837493">
-      <rect width="32" height="32"></rect>
-    </clippath>
-    <image width="96" height="124" y="-92" xlink:href="media/sprites.png">
-        clip-path="url(#blocklyZoomresetClipPath837493)"></image>
-  </g>
-  */
-  this.svgGroup_ = Blockly.createSvgElement('g',
-      {'class': 'blocklyZoom'}, null);
+  this.svgGroup_ =
+      Blockly.utils.createSvgElement('g', {'class': 'blocklyZoom'}, null);
+
+  // Each filter/pattern needs a unique ID for the case of multiple Blockly
+  // instances on a page.  Browser behaviour becomes undefined otherwise.
+  // https://neil.fraser.name/news/2015/11/01/
   var rnd = String(Math.random()).substring(2);
-
-  var clip = Blockly.createSvgElement('clipPath',
-      {'id': 'blocklyZoomoutClipPath' + rnd},
-      this.svgGroup_);
-  Blockly.createSvgElement('rect',
-      {'width': 32, 'height': 32, 'y': 77},
-      clip);
-  var zoomoutSvg = Blockly.createSvgElement('image',
-      {'width': Blockly.SPRITE.width,
-       'height': Blockly.SPRITE.height, 'x': -64,
-       'y': -15,
-       'clip-path': 'url(#blocklyZoomoutClipPath' + rnd + ')'},
-      this.svgGroup_);
-  zoomoutSvg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
-      workspace.options.pathToMedia + Blockly.SPRITE.url);
-
-  var clip = Blockly.createSvgElement('clipPath',
-      {'id': 'blocklyZoominClipPath' + rnd},
-      this.svgGroup_);
-  Blockly.createSvgElement('rect',
-      {'width': 32, 'height': 32, 'y': 43},
-      clip);
-  var zoominSvg = Blockly.createSvgElement('image',
-      {'width': Blockly.SPRITE.width,
-       'height': Blockly.SPRITE.height,
-       'x': -32,
-       'y': -49,
-       'clip-path': 'url(#blocklyZoominClipPath' + rnd + ')'},
-      this.svgGroup_);
-  zoominSvg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
-      workspace.options.pathToMedia + Blockly.SPRITE.url);
-
-  var clip = Blockly.createSvgElement('clipPath',
-      {'id': 'blocklyZoomresetClipPath' + rnd},
-      this.svgGroup_);
-  Blockly.createSvgElement('rect',
-      {'width': 32, 'height': 32},
-      clip);
-  var zoomresetSvg = Blockly.createSvgElement('image',
-      {'width': Blockly.SPRITE.width,
-       'height': Blockly.SPRITE.height, 'y': -92,
-       'clip-path': 'url(#blocklyZoomresetClipPath' + rnd + ')'},
-      this.svgGroup_);
-  zoomresetSvg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
-      workspace.options.pathToMedia + Blockly.SPRITE.url);
-
-  // Attach event listeners.
-  Blockly.bindEvent_(zoomresetSvg, 'mousedown', workspace, workspace.zoomReset);
-  Blockly.bindEvent_(zoominSvg, 'mousedown', null, function(e) {
-    workspace.zoomCenter(1);
-    e.stopPropagation();  // Don't start a workspace scroll.
-  });
-  Blockly.bindEvent_(zoomoutSvg, 'mousedown', null, function(e) {
-    workspace.zoomCenter(-1);
-    e.stopPropagation();  // Don't start a workspace scroll.
-  });
-
+  this.createZoomOutSvg_(rnd);
+  this.createZoomInSvg_(rnd);
+  this.createZoomResetSvg_(rnd);
   return this.svgGroup_;
 };
 
@@ -208,12 +139,172 @@ Blockly.ZoomControls.prototype.position = function() {
   }
   if (this.workspace_.RTL) {
     this.left_ = this.MARGIN_SIDE_ + Blockly.Scrollbar.scrollbarThickness;
+    if (metrics.toolboxPosition == Blockly.TOOLBOX_AT_LEFT) {
+      this.left_ += metrics.flyoutWidth;
+      if (this.workspace_.toolbox_) {
+        this.left_ += metrics.absoluteLeft;
+      }
+    }
   } else {
     this.left_ = metrics.viewWidth + metrics.absoluteLeft -
         this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness;
+
+    if (metrics.toolboxPosition == Blockly.TOOLBOX_AT_RIGHT) {
+      this.left_ -= metrics.flyoutWidth;
+    }
   }
   this.top_ = metrics.viewHeight + metrics.absoluteTop -
       this.HEIGHT_ - this.bottom_;
+  if (metrics.toolboxPosition == Blockly.TOOLBOX_AT_BOTTOM) {
+    this.top_ -= metrics.flyoutHeight;
+  }
   this.svgGroup_.setAttribute('transform',
       'translate(' + this.left_ + ',' + this.top_ + ')');
+};
+
+/**
+ * Create the zoom in icon and its event handler.
+ * @param {string} rnd The random string to use as a suffix in the clip path's
+ *     ID.  These IDs must be unique in case there are multiple Blockly
+ *     instances on the same page.
+ * @private
+ */
+Blockly.ZoomControls.prototype.createZoomOutSvg_ = function(rnd) {
+  /* This markup will be generated and added to the "blocklyZoom" group:
+  <clippath id="blocklyZoomoutClipPath837493">
+    <rect width="32" height="32" y="77"></rect>
+  </clippath>
+  <image width="96" height="124" x="-64" y="-15" xlink:href="media/sprites.png"
+      clip-path="url(#blocklyZoomoutClipPath837493)"></image>
+  */
+  var ws = this.workspace_;
+  var clip = Blockly.utils.createSvgElement('clipPath',
+      {
+        'id': 'blocklyZoomoutClipPath' + rnd
+      },
+      this.svgGroup_);
+  Blockly.utils.createSvgElement('rect',
+      {
+        'width': 32,
+        'height': 32,
+        'y': 77
+      },
+      clip);
+  var zoomoutSvg = Blockly.utils.createSvgElement('image',
+      {
+        'width': Blockly.SPRITE.width,
+        'height': Blockly.SPRITE.height, 'x': -64,
+        'y': -15,
+        'clip-path': 'url(#blocklyZoomoutClipPath' + rnd + ')'
+      },
+      this.svgGroup_);
+  zoomoutSvg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+      ws.options.pathToMedia + Blockly.SPRITE.url);
+
+  // Attach listener.
+  Blockly.bindEventWithChecks_(zoomoutSvg, 'mousedown', null, function(e) {
+    ws.markFocused();
+    ws.zoomCenter(-1);
+    Blockly.Touch.clearTouchIdentifier();  // Don't block future drags.
+    e.stopPropagation();  // Don't start a workspace scroll.
+    e.preventDefault();  // Stop double-clicking from selecting text.
+  });
+};
+
+/**
+ * Create the zoom out icon and its event handler.
+ * @param {string} rnd The random string to use as a suffix in the clip path's
+ *     ID.  These IDs must be unique in case there are multiple Blockly
+ *     instances on the same page.
+ * @private
+ */
+Blockly.ZoomControls.prototype.createZoomInSvg_ = function(rnd) {
+  /* This markup will be generated and added to the "blocklyZoom" group:
+  <clippath id="blocklyZoominClipPath837493">
+    <rect width="32" height="32" y="43"></rect>
+  </clippath>
+  <image width="96" height="124" x="-32" y="-49" xlink:href="media/sprites.png"
+      clip-path="url(#blocklyZoominClipPath837493)"></image>
+  */
+  var ws = this.workspace_;
+  var clip = Blockly.utils.createSvgElement('clipPath',
+      {
+        'id': 'blocklyZoominClipPath' + rnd
+      },
+      this.svgGroup_);
+  Blockly.utils.createSvgElement('rect',
+      {
+        'width': 32,
+        'height': 32,
+        'y': 43
+      },
+      clip);
+  var zoominSvg = Blockly.utils.createSvgElement('image',
+      {
+        'width': Blockly.SPRITE.width,
+        'height': Blockly.SPRITE.height,
+        'x': -32,
+        'y': -49,
+        'clip-path': 'url(#blocklyZoominClipPath' + rnd + ')'
+      },
+      this.svgGroup_);
+  zoominSvg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+      ws.options.pathToMedia + Blockly.SPRITE.url);
+
+  // Attach listener.
+  Blockly.bindEventWithChecks_(zoominSvg, 'mousedown', null, function(e) {
+    ws.markFocused();
+    ws.zoomCenter(1);
+    Blockly.Touch.clearTouchIdentifier();  // Don't block future drags.
+    e.stopPropagation();  // Don't start a workspace scroll.
+    e.preventDefault();  // Stop double-clicking from selecting text.
+  });
+};
+
+/**
+ * Create the zoom reset icon and its event handler.
+ * @param {string} rnd The random string to use as a suffix in the clip path's
+ *     ID.  These IDs must be unique in case there are multiple Blockly
+ *     instances on the same page.
+ * @private
+ */
+Blockly.ZoomControls.prototype.createZoomResetSvg_ = function(rnd) {
+  /* This markup will be generated and added to the "blocklyZoom" group:
+  <clippath id="blocklyZoomresetClipPath837493">
+    <rect width="32" height="32"></rect>
+  </clippath>
+  <image width="96" height="124" y="-92" xlink:href="media/sprites.png"
+      clip-path="url(#blocklyZoomresetClipPath837493)"></image>
+  */
+  var ws = this.workspace_;
+  var clip = Blockly.utils.createSvgElement('clipPath',
+      {
+        'id': 'blocklyZoomresetClipPath' + rnd
+      },
+      this.svgGroup_);
+  Blockly.utils.createSvgElement('rect',
+      {
+        'width': 32,
+        'height': 32
+      },
+      clip);
+  var zoomresetSvg = Blockly.utils.createSvgElement('image',
+      {
+        'width': Blockly.SPRITE.width,
+        'height': Blockly.SPRITE.height, 'y': -92,
+        'clip-path': 'url(#blocklyZoomresetClipPath' + rnd + ')'
+      },
+      this.svgGroup_);
+  zoomresetSvg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+      ws.options.pathToMedia + Blockly.SPRITE.url);
+
+  // Attach event listeners.
+  Blockly.bindEventWithChecks_(zoomresetSvg, 'mousedown', null, function(e) {
+    ws.markFocused();
+    ws.setScale(ws.options.zoomOptions.startScale);
+    ws.scrollCenter();
+    Blockly.Touch.clearTouchIdentifier();  // Don't block future drags.
+    e.stopPropagation();  // Don't start a workspace scroll.
+    e.preventDefault();  // Stop double-clicking from selecting text.
+  });
 };

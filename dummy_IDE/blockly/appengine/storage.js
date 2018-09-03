@@ -60,7 +60,7 @@ BlocklyStorage.restoreBlocks = function(opt_workspace) {
   if ('localStorage' in window && window.localStorage[url]) {
     var workspace = opt_workspace || Blockly.getMainWorkspace();
     var xml = Blockly.Xml.textToDom(window.localStorage[url]);
-    Blockly.Xml.domToWorkspace(workspace, xml);
+    Blockly.Xml.domToWorkspace(xml, workspace);
   }
 };
 
@@ -70,7 +70,16 @@ BlocklyStorage.restoreBlocks = function(opt_workspace) {
  */
 BlocklyStorage.link = function(opt_workspace) {
   var workspace = opt_workspace || Blockly.getMainWorkspace();
-  var xml = Blockly.Xml.workspaceToDom(workspace);
+  var xml = Blockly.Xml.workspaceToDom(workspace, true);
+  // Remove x/y coordinates from XML if there's only one block stack.
+  // There's no reason to store this, removing it helps with anonymity.
+  if (workspace.getTopBlocks(false).length == 1 && xml.querySelector) {
+    var block = xml.querySelector('block');
+    if (block) {
+      block.removeAttribute('x');
+      block.removeAttribute('y');
+    }
+  }
   var data = Blockly.Xml.domToText(xml);
   BlocklyStorage.makeRequest_('/storage', 'xml', data, workspace);
 };
@@ -181,7 +190,7 @@ BlocklyStorage.loadXml_ = function(xml, workspace) {
   }
   // Clear the workspace to avoid merge.
   workspace.clear();
-  Blockly.Xml.domToWorkspace(workspace, xml);
+  Blockly.Xml.domToWorkspace(xml, workspace);
 };
 
 /**

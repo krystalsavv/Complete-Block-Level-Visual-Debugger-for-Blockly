@@ -1,7 +1,15 @@
 import '../init.js';
+import './watches.js'
 import {dispatcher} from '../init.js';
 var Blockly_Debuggee = require("../init.js").Blockly_Debuggee;
 var window = require("../init.js").window;
+
+var watches = Blockly_Debuggee.actions["watch"].watches;
+//var update_values = Blockly_Debuggee.actions["watch"].update_values;
+//var variables = Blockly_Debuggee.actions["variables"].getVariables();
+var update_values = Blockly_Debuggee.actions["variables"].update_values;
+
+
 
 Blockly_Debuggee.actions.start_debugging = (function (){
     async function handler(content){
@@ -9,19 +17,24 @@ Blockly_Debuggee.actions.start_debugging = (function (){
             Blockly_Debuggee.actions["breakpoint"].update(content.breakpoints);
             Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint = content.cursorBreakpoint;
             Blockly_Debuggee.actions["watch"].update(content.watches);
-            await eval("async function code(){ "+ content.code +" };  code();");
+            Blockly_Debuggee.actions["variables"].update(content.variables);
+            var variables = Blockly_Debuggee.actions["variables"].getVariables();
+            var count;
+            await eval("async function code(){ "+ content.code +" }; code();");
             postMessage({"type": "execution_finished"});
         } else {
             window.alert("The content is undefined.");
         }
     };
 
-    async function $id(wait_call, code){
+    async function $id(update_values, wait_call, code){
         return code;
     };
 
+    var count = 0;
     async function wait(nest, block_id, CurrentSystemEditorId){
         await Blockly_Debuggee.wait(nest, block_id, CurrentSystemEditorId);
+        console.log("countWait:  "+ ++count);
     };
 
     function isStepOver(){

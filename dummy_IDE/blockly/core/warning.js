@@ -27,6 +27,7 @@
 goog.provide('Blockly.Warning');
 
 goog.require('Blockly.Bubble');
+goog.require('Blockly.Events.Ui');
 goog.require('Blockly.Icon');
 
 
@@ -56,22 +57,28 @@ Blockly.Warning.prototype.collapseHidden = false;
  */
 Blockly.Warning.prototype.drawIcon_ = function(group) {
   // Triangle with rounded corners.
-  Blockly.createSvgElement('path',
-      {'class': 'blocklyIconShape',
-       'd': 'M2,15Q-1,15 0.5,12L6.5,1.7Q8,-1 9.5,1.7L15.5,12Q17,15 14,15z'},
-       group);
+  Blockly.utils.createSvgElement('path',
+      {
+        'class': 'blocklyIconShape',
+        'd': 'M2,15Q-1,15 0.5,12L6.5,1.7Q8,-1 9.5,1.7L15.5,12Q17,15 14,15z'
+      },
+      group);
   // Can't use a real '!' text character since different browsers and operating
   // systems render it differently.
   // Body of exclamation point.
-  Blockly.createSvgElement('path',
-      {'class': 'blocklyIconSymbol',
-       'd': 'm7,4.8v3.16l0.27,2.27h1.46l0.27,-2.27v-3.16z'},
-       group);
+  Blockly.utils.createSvgElement('path',
+      {
+        'class': 'blocklyIconSymbol',
+        'd': 'm7,4.8v3.16l0.27,2.27h1.46l0.27,-2.27v-3.16z'
+      },
+      group);
   // Dot of exclamation point.
-  Blockly.createSvgElement('rect',
-      {'class': 'blocklyIconSymbol',
-       'x': '7', 'y': '11', 'height': '2', 'width': '2'},
-       group);
+  Blockly.utils.createSvgElement('rect',
+      {
+        'class': 'blocklyIconSymbol',
+        'x': '7', 'y': '11', 'height': '2', 'width': '2'
+      },
+      group);
 };
 
 /**
@@ -81,14 +88,18 @@ Blockly.Warning.prototype.drawIcon_ = function(group) {
  * @private
  */
 Blockly.Warning.textToDom_ = function(text) {
-  var paragraph = /** @type {!SVGTextElement} */ (
-      Blockly.createSvgElement('text',
-          {'class': 'blocklyText blocklyBubbleText',
-           'y': Blockly.Bubble.BORDER_WIDTH},
-          null));
+  var paragraph = /** @type {!SVGTextElement} */
+      (Blockly.utils.createSvgElement(
+          'text',
+          {
+            'class': 'blocklyText blocklyBubbleText',
+            'y': Blockly.Bubble.BORDER_WIDTH
+          },
+          null)
+      );
   var lines = text.split('\n');
   for (var i = 0; i < lines.length; i++) {
-    var tspanElement = Blockly.createSvgElement('tspan',
+    var tspanElement = Blockly.utils.createSvgElement('tspan',
         {'dy': '1em', 'x': Blockly.Bubble.BORDER_WIDTH}, paragraph);
     var textNode = document.createTextNode(lines[i]);
     tspanElement.appendChild(textNode);
@@ -105,13 +116,16 @@ Blockly.Warning.prototype.setVisible = function(visible) {
     // No change.
     return;
   }
+  Blockly.Events.fire(
+      new Blockly.Events.Ui(this.block_, 'warningOpen', !visible, visible));
   if (visible) {
     // Create the bubble to display all warnings.
     var paragraph = Blockly.Warning.textToDom_(this.getText());
     this.bubble_ = new Blockly.Bubble(
-        /** @type {!Blockly.Workspace} */ (this.block_.workspace),
-        paragraph, this.block_.svgPath_,
-        this.iconX_, this.iconY_, null, null);
+        /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
+        paragraph, this.block_.svgPath_, this.iconXY_, null, null);
+    // Expose this warning's block's ID on its top-level SVG group.
+    this.bubble_.setSvgId(this.block_.id);
     if (this.block_.RTL) {
       // Right-align the paragraph.
       // This cannot be done until the bubble is rendered on screen.
@@ -135,10 +149,11 @@ Blockly.Warning.prototype.setVisible = function(visible) {
 
 /**
  * Bring the warning to the top of the stack when clicked on.
- * @param {!Event} e Mouse up event.
+ * @param {!Event} _e Mouse up event.
  * @private
  */
-Blockly.Warning.prototype.bodyFocus_ = function(e) {
+
+Blockly.Warning.prototype.bodyFocus_ = function(_e) {
   this.bubble_.promote_();
 };
 

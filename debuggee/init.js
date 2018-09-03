@@ -1,18 +1,3 @@
-export var window = {
-    alert : function(msg) {
-      postMessage({"type": "alert", "data" : msg});
-    },
-    prompt : async function (msg){
-      postMessage({"type": "prompt", "data" : msg});
-      while(flags.promptMsg == undefined){
-        await next_message();
-      }
-      var tmp = flags.promptMsg;
-      flags.promptMsg = undefined;
-      return tmp;
-    }
-} ;  
-
 export var Blockly_Debuggee = {};
 Blockly_Debuggee.actions = {};
 
@@ -57,12 +42,13 @@ Blockly_Debuggee.wait = (function(){
 
   async function wait(nest, block_id, CurrentSystemEditorId){
     highlightBlock(block_id, CurrentSystemEditorId);
-
-    // call funtion to update watches value
+    //  console.log("nest: " + nest + "    currNest: " + Blockly_Debuggee.state.currNest + "    State: " );
+    //  console.log( Blockly_Debuggee.state.currState);
+    // // call funtion to update watches value
     
-    var code = (Blockly_Debuggee.actions["watch"].update_values());
-    console.log(code);
-    eval(code);
+    // var code = (Blockly_Debuggee.actions["watch"].update_values());
+    // console.log(code);
+    // eval(code);
 
     var hasBreakpoint = Blockly_Debuggee.actions.breakpoint.includes(block_id) || (Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint === block_id);
     // if(Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint !== "" ){
@@ -93,11 +79,29 @@ Blockly_Debuggee.wait = (function(){
   return wait;  
 })();
 
+
+export var window = {
+  alert : function(msg) {
+    postMessage({"type": "alert", "data" : msg});
+  },
+  prompt : async function (msg){
+    postMessage({"type": "prompt", "data" : msg});
+    while(Blockly_Debuggee.state.promptMsg == undefined){
+      await (function(){return new Promise(resolve => setTimeout(resolve, 0));})();         // next_message();
+    }
+    var tmp = Blockly_Debuggee.state.promptMsg;
+    Blockly_Debuggee.state.promptMsg = undefined;
+    return tmp;
+  }
+} ;  
+
+
 export var dispatcher = {
   prompt : (promptMsg) => {
-    flags.promptMsg = promptMsg;
+    Blockly_Debuggee.state.promptMsg = promptMsg;
   }
 };
+
 
 
 
