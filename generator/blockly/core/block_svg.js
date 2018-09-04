@@ -84,7 +84,7 @@ import {Blockly_Debugger} from '../../../debugger/debugger.js';
             if (index !== -1) Blockly_Debugger.actions["Breakpoint"].breakpoints.splice(index, 1);
           }
           Blockly_Debugger.actions["Breakpoint"].handler();
-          alert("Selected: " + block.id + "\n breakpoints: " + Blockly_Debugger.actions["Breakpoint"].breakpoints);
+          //alert("Selected: " + block.id + "\n breakpoints: " + Blockly_Debugger.actions["Breakpoint"].breakpoints);
         }
     };
     menuOptions.push(breakpointOption);

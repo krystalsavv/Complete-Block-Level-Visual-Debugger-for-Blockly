@@ -34,10 +34,11 @@
   </style>
 </head>
 <body>
-  <h1><a href="https://developers.google.com/blockly/">Blockly</a>
+  <h1><a href="https://developers.google.com/blockly/">Blockly</a></h1>
+  
+
   <p>
   <div id="action_bar">
-  
     <button id="ContinueButton">Continue</button>
     <button id="StartButton">Start Debugging</button>
     <button id="StepInButton">Step In</button> 
@@ -48,16 +49,21 @@
   </div>
   </p>
 
-
-  <!--div id="watch">
-    <div class="title">Watches  
+  <div id="watch">
+    <div class="title">Variables  
       <!--i class="fa fa-bars"></i-->
-    <!--/div>
-    <div class="watch-content">
-      aaaaaaaaaaaaaaaaaaaa<br>
-      a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>
     </div>
-  </div-->
+    <div class="watch-content">
+     <table style="width:100%">
+      <tr>
+        <th>Name</th>
+        <th>Value</th> 
+        <th>Type</th>
+      </tr>     
+    </table>
+    <table id="variables" style="width:100%"></table>
+  </div>
+  </div>
   <br>
   <br>
   <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>

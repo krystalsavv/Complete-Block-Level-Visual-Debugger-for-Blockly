@@ -19,8 +19,8 @@ Blockly_Debuggee.actions.start_debugging = (function (){
             Blockly_Debuggee.actions["watch"].update(content.watches);
             Blockly_Debuggee.actions["variables"].update(content.variables);
             var variables = Blockly_Debuggee.actions["variables"].getVariables();
-            var count;
-            await eval("async function code(){ "+ content.code +" }; code();");
+            var variables_code = "eval(update_values()); Blockly_Debuggee.actions[\"variables\"].updateDebugger();";
+            await eval("async function code(){ "+ content.code + variables_code + "}; code();");
             postMessage({"type": "execution_finished"});
         } else {
             window.alert("The content is undefined.");
@@ -31,10 +31,8 @@ Blockly_Debuggee.actions.start_debugging = (function (){
         return code;
     };
 
-    var count = 0;
     async function wait(nest, block_id, CurrentSystemEditorId){
         await Blockly_Debuggee.wait(nest, block_id, CurrentSystemEditorId);
-        console.log("countWait:  "+ ++count);
     };
 
     function isStepOver(){

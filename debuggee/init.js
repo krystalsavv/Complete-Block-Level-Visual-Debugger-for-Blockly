@@ -44,16 +44,9 @@ Blockly_Debuggee.wait = (function(){
     highlightBlock(block_id, CurrentSystemEditorId);
     //  console.log("nest: " + nest + "    currNest: " + Blockly_Debuggee.state.currNest + "    State: " );
     //  console.log( Blockly_Debuggee.state.currState);
-    // // call funtion to update watches value
-    
-    // var code = (Blockly_Debuggee.actions["watch"].update_values());
-    // console.log(code);
-    // eval(code);
 
     var hasBreakpoint = Blockly_Debuggee.actions.breakpoint.includes(block_id) || (Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint === block_id);
-    // if(Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint !== "" ){
-    //   console.log(Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint);
-    // }
+    
     if(Blockly_Debuggee.state.isState("continue") && !hasBreakpoint){ 
       Blockly_Debuggee.state.currNest = nest;   
       return;
@@ -62,6 +55,10 @@ Blockly_Debuggee.wait = (function(){
       if(Blockly_Debuggee.state.isState("stepIn") || hasBreakpoint || nest <= Blockly_Debuggee.state.currNest){
         if(Blockly_Debuggee.state.currId  === block_id && !hasBreakpoint) return;
         if(Blockly_Debuggee.state.isState("stepParent") && nest == Blockly_Debuggee.state.currNest && !hasBreakpoint) return;
+
+        // Send the array with vars values 
+        Blockly_Debuggee.actions["variables"].updateDebugger();
+
         while(!Blockly_Debuggee.state.stepWait){
             await next_message();
         }

@@ -46,21 +46,16 @@ Blockly_Debuggee.actions["variables"] = (function(){
     var variables = [];
     function update(new_vars){
         variables = new_vars;
-        console.log(variables);
     };
 
 
-    var count = 0;
     function update_values(){
         var code = '';
         for(var i=0; i<variables.length; ++i){
-           // code += 'var ' + variables[i].name + ';\n';
             code += 'variables[' + i + '].value = ' + variables[i].name + ';\n';
-            code += 'console.log(' + variables[i].name +');\n'
+            // code += 'console.log(' + variables[i].name +');\n'
         }
-        console.log("count:  " + ++count);
-        console.log(variables);
-
+        // console.log(variables);
         return code;
     }
     
@@ -68,10 +63,15 @@ Blockly_Debuggee.actions["variables"] = (function(){
         return variables;
     }
     
+    function updateDebugger(){
+        postMessage({"type": "variables", "data" : variables});
+    }
+
     return {
         update : update,
         update_values : update_values,
-        getVariables : getVariables
+        getVariables : getVariables,
+        updateDebugger : updateDebugger
     }
 })();
 

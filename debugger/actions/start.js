@@ -1,4 +1,5 @@
 import {Debuggee_Worker, Blockly_Debugger} from '../init.js';
+import './watches.js';
 
 // function addCode(js){                                // gia na kanw debug to eval 
 //     var e = document.createElement('script');
@@ -44,9 +45,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
         }
         variables.push(nvar);
     }
-
-
-    console.log(variables);
+    Blockly_Debugger.actions["Variables"].update(variables);
 
     // var code = "async function code(){\n" + code1 + code2 +" };\ncode();";
     // addCode(code);
