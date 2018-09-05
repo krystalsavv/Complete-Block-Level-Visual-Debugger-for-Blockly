@@ -27,8 +27,7 @@ Blockly_Debugger.actions["Variables"] = (function(){
 
     return {
         update : update,
-        getVariables : getVariables,
-        
+        getVariables : getVariables       
     }
 })();
 

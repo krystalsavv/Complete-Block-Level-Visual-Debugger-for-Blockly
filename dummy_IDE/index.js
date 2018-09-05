@@ -16,7 +16,6 @@ document.getElementById("StartButton").onclick = Blockly_Debugger.actions["Start
 
 addEventListener("updateTable",function (){
     let variables = Blockly_Debugger.actions["Variables"].getVariables();
-    console.log(document.getElementById("variables").innerHTML);
     document.getElementById("variables").innerHTML = '';
     for(var i = 0; i<variables.length; ++i){
         document.getElementById("variables").innerHTML += `<tr>

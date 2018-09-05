@@ -53,9 +53,7 @@ Blockly_Debuggee.actions["variables"] = (function(){
         var code = '';
         for(var i=0; i<variables.length; ++i){
             code += 'variables[' + i + '].value = ' + variables[i].name + ';\n';
-            // code += 'console.log(' + variables[i].name +');\n'
         }
-        // console.log(variables);
         return code;
     }
     
@@ -67,11 +65,20 @@ Blockly_Debuggee.actions["variables"] = (function(){
         postMessage({"type": "variables", "data" : variables});
     }
 
+    function define_variables(){
+        var code = '';
+        for(var i=0; i<variables.length; ++i){
+            code += 'var ' + variables[i].name + ';\n';
+        }
+        return code;
+    }
+
     return {
         update : update,
         update_values : update_values,
         getVariables : getVariables,
-        updateDebugger : updateDebugger
+        updateDebugger : updateDebugger,
+        define_variables : define_variables
     }
 })();
 

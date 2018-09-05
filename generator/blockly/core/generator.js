@@ -22,12 +22,12 @@ Blockly.Generator.prototype.blockToCode = function(block) {
     generation.nest--;
     if (goog.isArray(code)) {
       // Value blocks return tuples of code and operator order.
-      goog.asserts.assert(block.outputConnection,               //!! Now blockly 
+      goog.asserts.assert(block.outputConnection,               //!! New blockly 
         'Expecting string from statement block "%s".', block.type);
       code[0] = 'await $id(eval(update_values()), await wait(' + my_nest + ', ' + '\'' + block.id + '\', \''+ generation.currentSystemEditorId + '\'), ' + code[0] + ')';
       return [this.scrub_(block, code[0]), code[1]];
     } else if (goog.isString(code)) {
-      var id = block.id.replace(/\$/g, '$$$$');  // Issue 251.  //!! Now blockly 
+      var id = block.id.replace(/\$/g, '$$$$');  // Issue 251.  //!! New blockly 
       if (this.STATEMENT_PREFIX) {
         code = this.STATEMENT_PREFIX.replace(/%1/g, 'eval(update_values()), await wait(' + my_nest + ', \'' + block.id + '\', \''+ generation.currentSystemEditorId + '\') ') +
             code;

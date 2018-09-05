@@ -25,6 +25,9 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
         return variable.name;
     });
     
+
+    console.log( window.workspace["blockly1"].getAllVariables());
+
     var variables= [];
     for(var i = 0; i<variables1.length; ++i){
         var nvar = {

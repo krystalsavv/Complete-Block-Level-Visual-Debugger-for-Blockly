@@ -19,8 +19,9 @@ Blockly_Debuggee.actions.start_debugging = (function (){
             Blockly_Debuggee.actions["watch"].update(content.watches);
             Blockly_Debuggee.actions["variables"].update(content.variables);
             var variables = Blockly_Debuggee.actions["variables"].getVariables();
+            var def_variables_code = Blockly_Debuggee.actions["variables"].define_variables();
             var variables_code = "eval(update_values()); Blockly_Debuggee.actions[\"variables\"].updateDebugger();";
-            await eval("async function code(){ "+ content.code + variables_code + "}; code();");
+            await eval("async function code(){ " + def_variables_code + content.code + variables_code + "}; code();");
             postMessage({"type": "execution_finished"});
         } else {
             window.alert("The content is undefined.");

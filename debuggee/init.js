@@ -72,16 +72,17 @@ Blockly_Debuggee.wait = (function(){
         }       
     }
   };
-
   return wait;  
 })();
 
 
 export var window = {
   alert : function(msg) {
+    // Blockly_Debuggee.actions["variables"].updateDebugger();     // gia na fainontai swsta kata to alert ta value pisw ston pinaka --- to kanei meta to alert 
     postMessage({"type": "alert", "data" : msg});
   },
   prompt : async function (msg){
+    // Blockly_Debuggee.actions["variables"].updateDebugger();     // gia na fainontai swsta kata to prompt ta value pisw ston pinaka --- to kanei mete 
     postMessage({"type": "prompt", "data" : msg});
     while(Blockly_Debuggee.state.promptMsg == undefined){
       await (function(){return new Promise(resolve => setTimeout(resolve, 0));})();         // next_message();

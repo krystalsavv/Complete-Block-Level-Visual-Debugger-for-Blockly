@@ -102,27 +102,57 @@ import {Blockly_Debugger} from '../../../debugger/debugger.js';
 
 
     // Add/Remove watch
-    var watchOption = {
-      text: (block.type==="variables_set" || block.type==="variables_get") ?((!Blockly_Debugger.actions["Watch"].watches.includes(block.getVars()[0])) ? "Add Watch" : "Remove Watch") : "Add Watch",
-      enabled: (block.type==="variables_set" || block.type==="variables_get") ? true : false,
-      //enabled: true,
-      callback: function(){
-        //alert(block.nextConnection);
-        // console.log(block.nextConnection);  
-        // console.log(block.nextConnection.sourceBlock_.getVars());  
-        if(!Blockly_Debugger.actions["Watch"].watches.includes(block.getVars()[0])){
-          Blockly_Debugger.actions["Watch"].watches.push(block.getVars()[0]);
-        }else{
-          var index = Blockly_Debugger.actions["Watch"].watches.indexOf(block.getVars()[0]);
-          if (index !== -1) Blockly_Debugger.actions["Watch"].watches.splice(index, 1);
-        }
-        Blockly_Debugger.actions["Watch"].handler();        
-        alert(Blockly_Debugger.actions["Watch"].watches);
+    // var watchOption = {
+    //   text: (block.type==="variables_set" || block.type==="variables_get") ?((!Blockly_Debugger.actions["Watch"].watches.includes(block.getVars()[0])) ? "Add Watch" : "Remove Watch") : "Add Watch",
+    //   enabled: (block.type==="variables_set" || block.type==="variables_get") ? true : false,
+    //   //enabled: true,
+    //   callback: function(){
+    //     //alert(block.nextConnection);
+    //     // console.log(block.nextConnection);  
+    //     // console.log(block.nextConnection.sourceBlock_.getVars());  
+    //     if(!Blockly_Debugger.actions["Watch"].watches.includes(block.getVars()[0])){
+    //       Blockly_Debugger.actions["Watch"].watches.push(block.getVars()[0]);
+    //     }else{
+    //       var index = Blockly_Debugger.actions["Watch"].watches.indexOf(block.getVars()[0]);
+    //       if (index !== -1) Blockly_Debugger.actions["Watch"].watches.splice(index, 1);
+    //     }
+    //     Blockly_Debugger.actions["Watch"].handler();        
+    //     alert(Blockly_Debugger.actions["Watch"].watches);
 
+    //   }
+    // }
+
+    var watchOption = {
+      text: "Add Watch",
+      enabled: true,
+      callback: function(){
+        //Blockly.JavaScript.variableDB_.setVariableMap(window.workspace["blockly1"].getVariableMap());
+        // Blockly.JavaScript.STATEMENT_PREFIX = 'await $id(%1, 0);\n';
+        // var code = Blockly.JavaScript.workspaceToCode(window.workspace["blockly1"]);
+
+        // var code1 = Blockly.JavaScript.blockToCode(block);
+        // console.log(code1);
       }
     }
 
+
+
+
+
     menuOptions.push(watchOption);
+
+
+    // Evaluate
+    var evalOption = {
+      text: "Evaluate",
+      enabled: true,
+      callback: function(){
+        console.log(block);
+      }
+    };
+
+
+    menuOptions.push(evalOption);
 
 
 
