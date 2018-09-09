@@ -49,6 +49,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
         variables.push(nvar);
     }
     Blockly_Debugger.actions["Variables"].update(variables);
+    Blockly_Debugger.actions["Watch"].init();
 
     // var code = "async function code(){\n" + code1 + code2 +" };\ncode();";
     // addCode(code);
@@ -56,7 +57,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": {"code": code, 
                                                                                "breakpoints": Blockly_Debugger.actions["Breakpoint"].breakpoints,
                                                                                "cursorBreakpoint": cursorBreakpoint,
-                                                                               "watches": Blockly_Debugger.actions["Watch"].watches,            // prepei na kanw allages gt kanoyn allo pragma
+                                                                               "watches": Blockly_Debugger.actions["Watch"].getWatches(),            // prepei na kanw allages gt kanoyn allo pragma
                                                                                "variables": variables
                                                                             }});
     console.log(code1 + code2);
