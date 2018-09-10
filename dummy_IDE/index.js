@@ -12,18 +12,3 @@ document.getElementById("StopButton").onclick = Blockly_Debugger.actions["Stop"]
 document.getElementById("StartButton").onclick = Blockly_Debugger.actions["Start"].handler;
 
 //$("#RunButton").onclick((ev)=> Run(ev));
-
-
-addEventListener("updateTable",function (){
-    let variables = Blockly_Debugger.actions["Variables"].getVariables();
-    document.getElementById("variables").innerHTML = '';
-    for(var i = 0; i<variables.length; ++i){
-        document.getElementById("variables").innerHTML += `<tr>
-                                                                <td>` + variables[i].name + `</td>
-                                                                <td>` +  variables[i].value + `</td>
-                                                                <td>` + typeof variables[i].value + `</td>
-                                                            </tr>`;
-    }
-});
-
-

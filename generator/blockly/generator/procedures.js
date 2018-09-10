@@ -45,7 +45,7 @@ import {generation} from '../blockly_init.js'
     if (Blockly.JavaScript.STATEMENT_PREFIX) {
       var id = block.id.replace(/\$/g, '$$$$');  // Issue 251.
         branch = Blockly.JavaScript.prefixLines(
-            Blockly.JavaScript.STATEMENT_PREFIX.replace(/%1/g, 'await eval(update_values()), await wait(' + "0" + ', \'' + id + '\', \'' + generation.currentSystemEditorId + '\')'
+            Blockly.JavaScript.STATEMENT_PREFIX.replace(/%1/g, 'eval(update_values()), await wait(' + "0" + ', \'' + id + '\', \'' + generation.currentSystemEditorId + '\')'
         ), Blockly.JavaScript.INDENT) + branch ;
     }
 

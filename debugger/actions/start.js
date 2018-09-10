@@ -17,38 +17,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     var code2 = Blockly.JavaScript.workspaceToCode(window.workspace["blockly2"]); 
     var code = code1 + code2;
     
-
-    var variables1 = window.workspace["blockly1"].getAllVariables().map((variable) => {
-        return variable.name;
-    });
-    var variables2 = (window.workspace["blockly2"].getAllVariables()).map((variable) => {
-        return variable.name;
-    });
-    
-
-    console.log( window.workspace["blockly1"].getAllVariables());
-
-    var variables= [];
-    for(var i = 0; i<variables1.length; ++i){
-        var nvar = {
-            "name" : variables1[i],
-            "value" : undefined
-        }
-        variables.push(nvar);
-    }
-
-    var variables_names =  variables.map((variable) => {
-        return variable.name;
-    });
-    for(var i = 0; i<variables2.length; ++i){
-        if(variables_names.includes(variables2[i])) continue;
-        var nvar = {
-            "name" : variables2[i],
-            "value" : undefined
-        }
-        variables.push(nvar);
-    }
-    Blockly_Debugger.actions["Variables"].update(variables);
+    Blockly_Debugger.actions["Variables"].init();
     Blockly_Debugger.actions["Watch"].init();
 
     // var code = "async function code(){\n" + code1 + code2 +" };\ncode();";
@@ -57,8 +26,8 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     Debuggee_Worker.Instance().postMessage({"type":"start_debugging", "data": {"code": code, 
                                                                                "breakpoints": Blockly_Debugger.actions["Breakpoint"].breakpoints,
                                                                                "cursorBreakpoint": cursorBreakpoint,
-                                                                               "watches": Blockly_Debugger.actions["Watch"].getWatches(),            // prepei na kanw allages gt kanoyn allo pragma
-                                                                               "variables": variables
+                                                                               "watches": Blockly_Debugger.actions["Watch"].getWatches(),
+                                                                               "variables": Blockly_Debugger.actions["Variables"].getVariables()
                                                                             }});
     console.log(code1 + code2);
 }

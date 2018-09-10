@@ -68,115 +68,72 @@ import {Blockly_Debugger} from '../../../debugger/debugger.js';
       }
   
       menuOptions.push(Blockly.ContextMenu.blockDeleteOption(block));
-    }
-  
 
-        // Breakpoints
-    var breakpointOption = {
-      text: (!Blockly_Debugger.actions["Breakpoint"].breakpoints.includes(block.id)) ? "Add Breakpoint" : "Remove Breakpoint",
-      enabled: true,
-      callback: function() {
-          if(!Blockly_Debugger.actions["Breakpoint"].breakpoints.includes(block.id)) {
-            Blockly_Debugger.actions["Breakpoint"].breakpoints.push(block.id);
-            block.setCollapsed(false);                                  // expand the block if it is collapted 
-          } else {
-            var index = Blockly_Debugger.actions["Breakpoint"].breakpoints.indexOf(block.id);
-            if (index !== -1) Blockly_Debugger.actions["Breakpoint"].breakpoints.splice(index, 1);
+
+      // Breakpoints
+      var breakpointOption = {
+        text: (!Blockly_Debugger.actions["Breakpoint"].breakpoints.includes(block.id)) ? "Add Breakpoint" : "Remove Breakpoint",
+        enabled: true,
+        callback: function() {
+            if(!Blockly_Debugger.actions["Breakpoint"].breakpoints.includes(block.id)) {
+              Blockly_Debugger.actions["Breakpoint"].breakpoints.push(block.id);
+              block.setCollapsed(false);                                  // expand the block if it is collapted 
+            } else {
+              var index = Blockly_Debugger.actions["Breakpoint"].breakpoints.indexOf(block.id);
+              if (index !== -1) Blockly_Debugger.actions["Breakpoint"].breakpoints.splice(index, 1);
+            }
+            Blockly_Debugger.actions["Breakpoint"].handler();
           }
-          Blockly_Debugger.actions["Breakpoint"].handler();
-          //alert("Selected: " + block.id + "\n breakpoints: " + Blockly_Debugger.actions["Breakpoint"].breakpoints);
+      };
+      menuOptions.push(breakpointOption);
+
+      // Run to cursor
+      var runToCursorOption = {
+        text: "Run to cursor",
+        enabled: true,
+        callback: function() {
+          Blockly_Debugger.actions["RunToCursor"].handler(block.id);
         }
-    };
-    menuOptions.push(breakpointOption);
+      };
+      menuOptions.push(runToCursorOption);
 
-    // Run to cursor
-    var runToCursorOption = {
-      text: "Run to cursor",
-      enabled: true,
-      callback: function() {
-        Blockly_Debugger.actions["RunToCursor"].handler(block.id);
-       // window.alert("Run to cursor   " + block.id);
-      }
-    };
-    menuOptions.push(runToCursorOption);
+      var watchOption = {
+        text:(!Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).includes(block.toString())) ? "Add Watch" : "Remove Watch",
+        enabled: (block.outputConnection==null) ? false : true,
+        callback: function(){
+          var code = Blockly.JavaScript.myBlockToCode(block);
+          var name = block.toString();
 
-
-    // Add/Remove watch
-    // var watchOption = {
-    //   text: (block.type==="variables_set" || block.type==="variables_get") ?((!Blockly_Debugger.actions["Watch"].watches.includes(block.getVars()[0])) ? "Add Watch" : "Remove Watch") : "Add Watch",
-    //   enabled: (block.type==="variables_set" || block.type==="variables_get") ? true : false,
-    //   //enabled: true,
-    //   callback: function(){
-    //     //alert(block.nextConnection);
-    //     // console.log(block.nextConnection);  
-    //     // console.log(block.nextConnection.sourceBlock_.getVars());  
-    //     if(!Blockly_Debugger.actions["Watch"].watches.includes(block.getVars()[0])){
-    //       Blockly_Debugger.actions["Watch"].watches.push(block.getVars()[0]);
-    //     }else{
-    //       var index = Blockly_Debugger.actions["Watch"].watches.indexOf(block.getVars()[0]);
-    //       if (index !== -1) Blockly_Debugger.actions["Watch"].watches.splice(index, 1);
-    //     }
-    //     Blockly_Debugger.actions["Watch"].handler();        
-    //     alert(Blockly_Debugger.actions["Watch"].watches);
-
-    //   }
-    // }
-
-    var watchOption = {
-      text: "Add Watch",
-      enabled: true,
-      callback: function(){
-        var code = Blockly.JavaScript.myBlockToCode(block,block.workspace);
-        console.log(code);
-        var name = "tha to brw";
-        var new_watch = {
-          "name": name,
-          "code": code, 
-          "value": undefined
+          var new_watch = {
+            "name": name,
+            "code": code, 
+            "value": undefined
+          }
+          if(!Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).includes(name)){
+            Blockly_Debugger.actions["Watch"].getWatches().push(new_watch);
+          }else{
+            var index = Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).indexOf(name);
+            if (index !== -1) Blockly_Debugger.actions["Watch"].getWatches().splice(index, 1);
+          }
+          Blockly_Debugger.actions["Watch"].handler();  
         }
-         // if(!Blockly_Debugger.actions["Watch"].watches.map((obj)=>{return obj.name;}).includes(name)){
-          Blockly_Debugger.actions["Watch"].getWatches().push(new_watch);
-        // }else{
-        //   var index = Blockly_Debugger.actions["Watch"].watches.watches.map((obj)=>{return obj.name;}).indexOf(name);
-        //   if (index !== -1) Blockly_Debugger.actions["Watch"].watches.splice(index, 1);
-        // }
-        Blockly_Debugger.actions["Watch"].handler();  
-
-        //console.log(Blockly_Debugger.actions["Watch"].getWatches());
-      
-        
-      
       }
+      menuOptions.push(watchOption);
+
+
+      // Evaluate
+      var evalOption = {
+        text: "Evaluate",
+        enabled: (block.type === "variables_set" || block.type==="math_change") ? true : false,
+        //enabled: true,
+        callback: function(){
+          console.log(block);
+        }
+      };
+      menuOptions.push(evalOption);   
     }
-
-
-
-
-
-    menuOptions.push(watchOption);
-
-
-    // Evaluate
-    var evalOption = {
-      text: "Evaluate",
-      enabled: true,
-      callback: function(){
-        console.log(block);
-      }
-    };
-
-
-    menuOptions.push(evalOption);
-
-
-
-
-
 
     menuOptions.push(Blockly.ContextMenu.blockHelpOption(block));
-
-
-
 
 
   

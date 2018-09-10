@@ -8,7 +8,8 @@ Blockly_Debuggee.actions["watch"] = (function(){
     var watches = [];
     function handler(new_watches){
         watches = new_watches;
-        console.log("Handler:");
+        // prepei na kanw kati na ta ypologizw 
+        console.log("Handler (debuggee):");
         console.log(watches);
     };
 
@@ -18,7 +19,7 @@ Blockly_Debuggee.actions["watch"] = (function(){
     
     function update(updated){            
         watches = updated;
-        console.log( "Update:");
+        console.log( "Update (debuggee):");
         console.log(watches);
     };
 
@@ -28,11 +29,7 @@ Blockly_Debuggee.actions["watch"] = (function(){
         for(var i=0; i<watches.length; ++i){
             code += 'watches[' + i + '].value = ' + watches[i].code + ';\n';
         }
-        var end_code =  `var temp_nest = Blockly_Debuggee.state.currNest;  
-                          \nBlockly_Debuggee.state.currNest = -1;\n`
-                          + code +
-                         'Blockly_Debuggee.state.currNest = temp_nest;';
-        return end_code;
+        return "var watches = Blockly_Debuggee.actions[\"watch\"].getWatches();" + code;
     }
     
     function getWatches(){

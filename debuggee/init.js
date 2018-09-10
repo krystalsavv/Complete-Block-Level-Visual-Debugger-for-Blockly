@@ -58,6 +58,7 @@ Blockly_Debuggee.wait = (function(){
 
         // Send the array with vars values 
         Blockly_Debuggee.actions["variables"].updateDebugger();
+        Blockly_Debuggee.actions["watch"].updateDebugger();
 
         while(!Blockly_Debuggee.state.stepWait){
             await next_message();

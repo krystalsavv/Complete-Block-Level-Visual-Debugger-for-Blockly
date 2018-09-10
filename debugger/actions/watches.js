@@ -8,13 +8,16 @@ Blockly_Debugger.actions["Watch"] = (function(){
     var watches = [];
     
     function handler(){
+        dispatchEvent(new Event("updateWatchesTable"));
         if(!Debuggee_Worker.hasInstance()) return; 
         Debuggee_Worker.Instance().postMessage({"type":"watch", "data": watches});
     }
 
     function update(new_watches){
         watches = new_watches;
-        //dispatchEvent(new Event("updateTable"));
+        console.log("Upadated watch Debugger:");
+        console.log(watches);
+        dispatchEvent(new Event("updateWatchesTable"));
     };
     
     function getWatches(){
@@ -49,11 +52,72 @@ Blockly_Debugger.actions["Variables"] = (function(){
     
     function getVariables(){
         return variables;
-    }
+    };
+
+    function init(){
+        // var variables1 = window.workspace["blockly1"].getAllVariables().map((variable) => {
+        //     return variable.name;
+        // });
+        // var variables2 = (window.workspace["blockly2"].getAllVariables()).map((variable) => {
+        //     return variable.name;
+        // });
+
+
+        var workspace_vars = [];
+        workspace_vars[0] = window.workspace["blockly1"].getAllVariables().map((variable) => {
+            return variable.name;
+        });
+        workspace_vars[1] = window.workspace["blockly2"].getAllVariables().map((variable) => {
+            return variable.name;
+        });
+
+        for(var i = 0; i<workspace_vars.length; i++){
+            var variables_names =  variables.map((variable) => {
+                return variable.name;
+            });   
+            for(var j = 0; j<workspace_vars[i].length; ++j){
+                if(variables_names.includes(workspace_vars[i][j])) continue;
+                var nvar = {
+                    "name" : workspace_vars[i][j],
+                    "value" : undefined
+                }
+                variables.push(nvar);
+            }
+        }
+
+
+        // var variables_names =  variables.map((variable) => {
+        //     return variable.name;
+        // });
+
+        // for(var i = 0; i<variables1.length; ++i){
+        //     if(variables_names.includes(variables1[i])) continue;
+        //     var nvar = {
+        //         "name" : variables1[i],
+        //         "value" : undefined
+        //     }
+        //     variables.push(nvar);
+        // }
+
+        // variables_names =  variables.map((variable) => {
+        //     return variable.name;
+        // });
+        
+        // for(var i = 0; i<variables2.length; ++i){
+        //     if(variables_names.includes(variables2[i])) continue;
+        //     var nvar = {
+        //         "name" : variables2[i],
+        //         "value" : undefined
+        //     }
+        //     variables.push(nvar);
+        // }
+        dispatchEvent(new Event("updateTable"));
+    };
 
     return {
         update : update,
-        getVariables : getVariables       
+        getVariables : getVariables,
+        init : init       
     }
 })();
 

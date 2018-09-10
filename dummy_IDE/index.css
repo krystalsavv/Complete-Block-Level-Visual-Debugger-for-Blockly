@@ -33,11 +33,11 @@ button:hover {
     /*background-color: rgba(84, 84, 97, 0.986);*/
 }
 
-#watch {
+.watch {
     background-color: #4CAF50;
     margin: 20px 20px;
     float: right;
-    width: 40%;
+    width: 50%;
     height: 200px;
     
 }

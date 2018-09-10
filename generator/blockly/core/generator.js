@@ -24,12 +24,13 @@ Blockly.Generator.prototype.blockToCode = function(block) {
       // Value blocks return tuples of code and operator order.
       goog.asserts.assert(block.outputConnection,               //!! New blockly 
         'Expecting string from statement block "%s".', block.type);
-      code[0] = 'await $id(await eval(update_values()), await wait(' + my_nest + ', ' + '\'' + block.id + '\', \''+ generation.currentSystemEditorId + '\'), ' + code[0] + ')';
+      if (this.STATEMENT_PREFIX) 
+        code[0] = 'await $id(eval(update_values()), await wait(' + my_nest + ', ' + '\'' + block.id + '\', \''+ generation.currentSystemEditorId + '\'), ' + code[0] + ')';
       return [this.scrub_(block, code[0]), code[1]];
     } else if (goog.isString(code)) {
       var id = block.id.replace(/\$/g, '$$$$');  // Issue 251.  //!! New blockly 
       if (this.STATEMENT_PREFIX) {
-        code = this.STATEMENT_PREFIX.replace(/%1/g, 'await eval(update_values()), await wait(' + my_nest + ', \'' + block.id + '\', \''+ generation.currentSystemEditorId + '\') ') +
+        code = this.STATEMENT_PREFIX.replace(/%1/g, 'eval(update_values()), await wait(' + my_nest + ', \'' + block.id + '\', \''+ generation.currentSystemEditorId + '\') ') +
             code;
       }
       return this.scrub_(block, code);
@@ -48,7 +49,7 @@ Blockly.Generator.prototype.addLoopTrap = function(branch, id) {
     branch = this.INFINITE_LOOP_TRAP.replace(/%1/g, '\'' + id + '\'') + branch;
   }
   if (this.STATEMENT_PREFIX) {
-    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, 'await eval(update_values()), await wait(' + generation.nest + ', \'' + id + '\', \''+ generation.currentSystemEditorId + '\')'), this.INDENT);
+    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, 'eval(update_values()), await wait(' + generation.nest + ', \'' + id + '\', \''+ generation.currentSystemEditorId + '\')'), this.INDENT);
   }
   return branch;
 };
@@ -100,6 +101,8 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
   }
   this.init(block.workspace);           //  added 
   var func = this[block.type];
+  var stmt_Prefix = this.STATEMENT_PREFIX;
+  this.STATEMENT_PREFIX = null;
   goog.asserts.assertFunction(func,
       'Language "%s" does not know how to generate code for block type "%s".',
       this.name_, block.type);
@@ -107,10 +110,13 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
   if (goog.isArray(code)) {
        goog.asserts.assert(block.outputConnection,
         'Expecting string from statement block "%s".', block.type);
+    this.STATEMENT_PREFIX = stmt_Prefix;
     return this.scrub_(block, code[0]);     // gia na ta kanei ola return san text
   } else if (goog.isString(code)) {
+    this.STATEMENT_PREFIX = stmt_Prefix;
     return this.scrub_(block, code);
   } else if (code === null) {
+    this.STATEMENT_PREFIX = stmt_Prefix;
     return '';
   } else {
     goog.asserts.fail('Invalid code generated: %s', code);
