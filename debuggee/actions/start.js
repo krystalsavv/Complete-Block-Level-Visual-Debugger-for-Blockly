@@ -3,6 +3,7 @@ import './watches.js'
 import {dispatcher} from '../init.js';
 var Blockly_Debuggee = require("../init.js").Blockly_Debuggee;
 var window = require("../init.js").window;
+//var evalLocal;
 
 function update_values(){
     var update_var = Blockly_Debuggee.actions["variables"].update_values();
@@ -20,8 +21,9 @@ Blockly_Debuggee.actions.start_debugging = (function (){
             var variables = Blockly_Debuggee.actions["variables"].getVariables();
             var watches = Blockly_Debuggee.actions["watch"].getWatches();
             var def_variables_code = Blockly_Debuggee.actions["variables"].define_variables();
-            var variablesWatches_code = "eval(update_values()); Blockly_Debuggee.actions[\"variables\"].updateDebugger(); Blockly_Debuggee.actions[\"watch\"].updateDebugger();";
-            await eval("async function code(){ " + def_variables_code + content.code + variablesWatches_code + "}; code();");
+            var variablesWatches_code = "eval(update_values()); Blockly_Debuggee.actions[\"variables\"].updateDebugger(); Blockly_Debuggee.actions[\"watch\"].updateDebugger();";        
+            await eval(def_variables_code + " function evalLocal(expr){eval(expr);} Blockly_Debuggee.actions[\"eval\"].evalLocal = evalLocal;" + "async function code(){ " + content.code + variablesWatches_code + "}; code(); ");
+
             postMessage({"type": "execution_finished"});
         } else {
             window.alert("The content is undefined.");
@@ -33,6 +35,7 @@ Blockly_Debuggee.actions.start_debugging = (function (){
     };
 
     async function wait(nest, block_id, CurrentSystemEditorId){
+        //evalLocal("window.alert(n + \"!!!!!\");");
         await Blockly_Debuggee.wait(nest, block_id, CurrentSystemEditorId);
     };
 

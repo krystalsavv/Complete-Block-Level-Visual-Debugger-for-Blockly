@@ -2,15 +2,17 @@ import {Blockly_Debuggee, dispatcher} from '../init.js';
 
 Blockly_Debuggee.actions["watch"] = {};
 Blockly_Debuggee.actions["variables"] = {};
+Blockly_Debuggee.actions["eval"] = {};
 
 
 Blockly_Debuggee.actions["watch"] = (function(){
     var watches = [];
     function handler(new_watches){
         watches = new_watches;
-        // prepei na kanw kati na ta ypologizw 
-        console.log("Handler (debuggee):");
-        console.log(watches);
+        for(var i=0; i<watches.length; ++i){
+            Blockly_Debuggee.actions["eval"].evalLocal("var watches = Blockly_Debuggee.actions[\"watch\"].getWatches();" + 'watches[' + i + '].value = ' + watches[i].code + ';\n');
+        }
+        updateDebugger();
     };
 
     function includes(variable){
@@ -94,4 +96,16 @@ Blockly_Debuggee.actions["variables"] = (function(){
 })();
 
 
+Blockly_Debuggee.actions["eval"].evalLocal;
+
+Blockly_Debuggee.actions["eval"].handler = function (expr){
+    Blockly_Debuggee.actions["eval"].evalLocal(expr);
+    Blockly_Debuggee.actions["eval"].evalLocal(Blockly_Debuggee.actions["variables"].update_values());
+    Blockly_Debuggee.actions["variables"].updateDebugger();
+    Blockly_Debuggee.actions["eval"].evalLocal(Blockly_Debuggee.actions["watch"].update_values());
+    Blockly_Debuggee.actions["watch"].updateDebugger();   
+}
+
+
 dispatcher.watch = Blockly_Debuggee.actions["watch"].handler;
+dispatcher.eval = Blockly_Debuggee.actions["eval"].handler;

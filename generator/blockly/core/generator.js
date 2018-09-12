@@ -114,6 +114,7 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
     return this.scrub_(block, code[0]);     // gia na ta kanei ola return san text
   } else if (goog.isString(code)) {
     this.STATEMENT_PREFIX = stmt_Prefix;
+    //return code;
     return this.scrub_(block, code);
   } else if (code === null) {
     this.STATEMENT_PREFIX = stmt_Prefix;
@@ -121,4 +122,20 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
   } else {
     goog.asserts.fail('Invalid code generated: %s', code);
   }
+};
+
+
+Blockly.JavaScript.finish=function(a){
+  var b=[],c;
+  for(c in Blockly.JavaScript.definitions_){
+    if(c === "variables") continue;
+    b.push(Blockly.JavaScript.definitions_[c]);
+  }
+  delete Blockly.JavaScript.definitions_;
+  delete Blockly.JavaScript.functionNames_;
+  Blockly.JavaScript.variableDB_.reset();
+  return b.join("\n\n")+"\n\n\n"+a};
+  Blockly.JavaScript.scrubNakedValue=function(a){return a+";\n"};
+  Blockly.JavaScript.quote_=function(a){a=a.replace(/\\/g,"\\\\").replace(/\n/g,"\\\n").replace(/'/g,"\\'");
+  return"'"+a+"'"
 };

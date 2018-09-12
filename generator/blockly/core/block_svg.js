@@ -127,7 +127,8 @@ import {Blockly_Debugger} from '../../../debugger/debugger.js';
         enabled: (block.type === "variables_set" || block.type==="math_change") ? true : false,
         //enabled: true,
         callback: function(){
-          console.log(block);
+          //console.log(block);
+          Blockly_Debugger.actions["Eval"].handler(Blockly.JavaScript.myBlockToCode(block));  
         }
       };
       menuOptions.push(evalOption);   

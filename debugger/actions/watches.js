@@ -2,6 +2,7 @@ import {Debuggee_Worker, Blockly_Debugger} from '../init.js';
 
 Blockly_Debugger.actions["Watch"] = {};
 Blockly_Debugger.actions["Variables"] = {};
+Blockly_Debugger.actions["Eval"] = {};
 
 
 Blockly_Debugger.actions["Watch"] = (function(){
@@ -120,6 +121,13 @@ Blockly_Debugger.actions["Variables"] = (function(){
         init : init       
     }
 })();
+
+
+Blockly_Debugger.actions["Eval"].handler = function (expr){
+    console.log(expr);
+    if(!Debuggee_Worker.hasInstance()) return;
+    Debuggee_Worker.Instance().postMessage({"type":"eval", "data": expr});
+}
 
 
 Debuggee_Worker.AddOnDispacher("watches", Blockly_Debugger.actions["Watch"].update);
