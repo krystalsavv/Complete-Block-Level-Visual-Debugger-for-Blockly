@@ -67,3 +67,8 @@ th,td {
     width: 33%;
 }
 
+.breakpoint_enable {
+    fill: red;
+    stroke: yellow;
+    stroke-width: 1px;
+}

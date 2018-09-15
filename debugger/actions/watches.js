@@ -16,8 +16,6 @@ Blockly_Debugger.actions["Watch"] = (function(){
 
     function update(new_watches){
         watches = new_watches;
-        console.log("Upadated watch Debugger:");
-        console.log(watches);
         dispatchEvent(new Event("updateWatchesTable"));
     };
     
@@ -38,7 +36,6 @@ Blockly_Debugger.actions["Watch"] = (function(){
         init : init       
     }
 })();
-
 
 
 Blockly_Debugger.actions["Variables"] = (function(){
@@ -124,7 +121,6 @@ Blockly_Debugger.actions["Variables"] = (function(){
 
 
 Blockly_Debugger.actions["Eval"].handler = function (expr){
-    console.log(expr);
     if(!Debuggee_Worker.hasInstance()) return;
     Debuggee_Worker.Instance().postMessage({"type":"eval", "data": expr});
 }

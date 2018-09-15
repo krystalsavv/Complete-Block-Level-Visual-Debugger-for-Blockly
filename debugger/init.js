@@ -41,11 +41,10 @@ export var Debuggee_Worker = (function (){
 		dispatcher["highlightBlock"] = (data) => {
 							window.workspace[data.CurrentSystemEditorId].traceOn_ = true;
 							window.workspace[data.CurrentSystemEditorId].highlightBlock(data.id);
-							// var block = window.workspace[data.CurrentSystemEditorId].getBlockById(data.id);		// gia na anoigei to block an exw mesa bp (to kanei se ola :P)
-							// block.setCollapsed(false);
 				}; 						
 		dispatcher["execution_finished"] = () => {
 					instance = undefined;
+					document.getElementById("val_table").innerHTML = '';
 				};		
 	};
 

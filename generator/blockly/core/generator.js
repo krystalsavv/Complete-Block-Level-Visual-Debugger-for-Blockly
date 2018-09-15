@@ -96,6 +96,7 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
 
  // den einai kalh idea pou to exw balei sto Blockly.Generator.prototype gt einai diko m
  Blockly.Generator.prototype.myBlockToCode = function(block) {
+   console.log("myBlockToCode");
   if (!block || block.disabled) {
     return '';
   }
@@ -111,11 +112,11 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
        goog.asserts.assert(block.outputConnection,
         'Expecting string from statement block "%s".', block.type);
     this.STATEMENT_PREFIX = stmt_Prefix;
-    return this.scrub_(block, code[0]);     // gia na ta kanei ola return san text
+    return this.myscrub_(block, code[0]);     // gia na ta kanei ola return san text
   } else if (goog.isString(code)) {
     this.STATEMENT_PREFIX = stmt_Prefix;
     //return code;
-    return this.scrub_(block, code);
+    return this.myscrub_(block, code);
   } else if (code === null) {
     this.STATEMENT_PREFIX = stmt_Prefix;
     return '';
@@ -123,6 +124,18 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
     goog.asserts.fail('Invalid code generated: %s', code);
   }
 };
+
+
+Blockly.JavaScript.myscrub_=function(a,b){
+  var c="";
+  if(!a.outputConnection||!a.outputConnection.targetConnection){
+    var d=a.getCommentText();
+    (d=Blockly.utils.wrap(d,Blockly.JavaScript.COMMENT_WRAP-3))&&(c=a.getProcedureDef?c+("/**\n"+Blockly.JavaScript.prefixLines(d+"\n"," * ")+" */\n"):c+Blockly.JavaScript.prefixLines(d+"\n","// "));
+    for(var e=0;e<a.inputList.length;e++)
+      a.inputList[e].type==Blockly.INPUT_VALUE&&(d=a.inputList[e].connection.targetBlock())&&(d=Blockly.JavaScript.allNestedComments(d))&&(c+=Blockly.JavaScript.prefixLines(d,"// "))
+  }
+  return c+b;
+}
 
 
 Blockly.JavaScript.finish=function(a){

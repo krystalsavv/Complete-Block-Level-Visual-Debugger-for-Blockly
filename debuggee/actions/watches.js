@@ -21,8 +21,6 @@ Blockly_Debuggee.actions["watch"] = (function(){
     
     function update(updated){            
         watches = updated;
-        console.log( "Update (debuggee):");
-        console.log(watches);
     };
 
 

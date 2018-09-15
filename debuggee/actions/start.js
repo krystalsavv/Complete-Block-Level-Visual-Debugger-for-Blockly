@@ -3,7 +3,6 @@ import './watches.js'
 import {dispatcher} from '../init.js';
 var Blockly_Debuggee = require("../init.js").Blockly_Debuggee;
 var window = require("../init.js").window;
-//var evalLocal;
 
 function update_values(){
     var update_var = Blockly_Debuggee.actions["variables"].update_values();
@@ -35,7 +34,6 @@ Blockly_Debuggee.actions.start_debugging = (function (){
     };
 
     async function wait(nest, block_id, CurrentSystemEditorId){
-        //evalLocal("window.alert(n + \"!!!!!\");");
         await Blockly_Debuggee.wait(nest, block_id, CurrentSystemEditorId);
     };
 
