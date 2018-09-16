@@ -109,7 +109,7 @@ Blockly_Debugger.actions["Variables"] = (function(){
         //     }
         //     variables.push(nvar);
         // }
-        dispatchEvent(new Event("updateTable"));
+        //dispatchEvent(new Event("updateTable"));
     };
 
     return {

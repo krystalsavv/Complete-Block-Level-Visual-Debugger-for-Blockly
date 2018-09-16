@@ -14,7 +14,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     Blockly_Debugger.actions["Watch"].init();
 
     document.getElementById("val_table").innerHTML = `  <div class="watch">
-                                                            <div class="title">Variables  
+                                                            <div class="title">&nbsp;Variables  
                                                             <!--i class="fa fa-bars"></i-->
                                                             </div>
                                                             <div class="watch-content">
@@ -31,7 +31,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
                                                         </div>
 
                                                         <div class="watch">
-                                                            <div class="title">Watches</div>
+                                                            <div class="title">&nbsp;Watches</div>
                                                             <div class="watch-content">
                                                             <table style="width:100%">
                                                             <tr>

@@ -96,7 +96,6 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
 
  // den einai kalh idea pou to exw balei sto Blockly.Generator.prototype gt einai diko m
  Blockly.Generator.prototype.myBlockToCode = function(block) {
-   console.log("myBlockToCode");
   if (!block || block.disabled) {
     return '';
   }
