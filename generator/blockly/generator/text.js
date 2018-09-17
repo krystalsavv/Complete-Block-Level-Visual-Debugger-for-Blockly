@@ -244,3 +244,9 @@ Blockly.JavaScript['text_length'] = function(block) {
   Blockly.JavaScript['text_prompt'] = Blockly.JavaScript['text_prompt_ext'];
 
 
+  Blockly.JavaScript['text_print'] = function(block) {
+    // Print statement.
+    var msg = Blockly.JavaScript.valueToCode(block, 'TEXT',
+        Blockly.JavaScript.ORDER_NONE) || '\'\'';
+    return 'await window.alert(' + msg + ');\n';
+  };

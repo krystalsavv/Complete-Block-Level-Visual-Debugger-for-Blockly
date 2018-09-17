@@ -4,7 +4,7 @@ export var Debuggee_Worker = (function (){
 	  
 	function getInstance(){
 		if(instance === undefined){
-			instance = new Worker("./dist/debuggee.js"); // to path apo to localhost kai oxi apo edw
+			instance = new Worker("./dist/debuggee.js");	 // to path apo to localhost kai oxi apo edw
 			initDispacher();
 			instance.onmessage = function(msg) {
                 let obj = msg.data;
@@ -34,9 +34,10 @@ export var Debuggee_Worker = (function (){
 	function initDispacher(){
 		dispatcher["alert"] = (msg) => {
 					window.alert(msg);
+					Debuggee_Worker.Instance().postMessage({"type":"alert","data": ""});
 				};
 		dispatcher["prompt"] = (msg) => {
-					Debuggee_Worker.Instance().postMessage({"type":"prompt","data": window.prompt(msg)}); 
+					Debuggee_Worker.Instance().postMessage({"type":"prompt","data": window.prompt(msg)}); 					
 				};
 		dispatcher["highlightBlock"] = (data) => {
 							window.workspace[data.CurrentSystemEditorId].traceOn_ = true;

@@ -5,6 +5,7 @@ Blockly_Debuggee.state = {
   currNest : 0,
   currId : '',
   promptMsg : undefined,
+  alertFlag : false,
   stepWait : false,
   currState: {
     stepIn : false,
@@ -42,7 +43,7 @@ Blockly_Debuggee.wait = (function(){
 
   async function wait(nest, block_id, CurrentSystemEditorId){
     highlightBlock(block_id, CurrentSystemEditorId);
-    
+
     var hasBreakpoint = Blockly_Debuggee.actions.breakpoint.includes_enable(block_id) || (Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint === block_id);
     
     if(Blockly_Debuggee.state.isState("continue") && !hasBreakpoint){ 
@@ -79,15 +80,21 @@ Blockly_Debuggee.wait = (function(){
 
 
 export var window = {
-  alert : function(msg) {
-    Blockly_Debuggee.actions["variables"].updateDebugger();     // gia na fainontai swsta kata to alert ta value pisw ston pinaka --- to kanei meta to alert 
+  alert : async function(msg) {
+    Blockly_Debuggee.actions["variables"].updateDebugger();     // gia na fainontai swsta kata to alert ta value pisw ston pinaka
     Blockly_Debuggee.actions["watch"].updateDebugger();
-    postMessage({"type": "alert", "data" : msg});
+    setTimeout(function(){ postMessage({"type": "alert", "data" : msg}); },50);
+    while(!Blockly_Debuggee.state.alertFlag){
+      await (function(){return new Promise(resolve => setTimeout(resolve, 0));})();         // next_message();
+    }
+    Blockly_Debuggee.state.alertFlag = false;
+
+    
   },
   prompt : async function (msg){
-    Blockly_Debuggee.actions["variables"].updateDebugger();     // gia na fainontai swsta kata to prompt ta value pisw ston pinaka --- to kanei mete 
+    Blockly_Debuggee.actions["variables"].updateDebugger();     // gia na fainontai swsta kata to prompt ta value pisw ston pinaka
     Blockly_Debuggee.actions["watch"].updateDebugger();
-    postMessage({"type": "prompt", "data" : msg});
+    setTimeout(function(){ postMessage({"type": "prompt", "data" : msg}); },50);
     while(Blockly_Debuggee.state.promptMsg == undefined){
       await (function(){return new Promise(resolve => setTimeout(resolve, 0));})();         // next_message();
     }
@@ -101,9 +108,11 @@ export var window = {
 export var dispatcher = {
   prompt : (promptMsg) => {
     Blockly_Debuggee.state.promptMsg = promptMsg;
+  },
+  alert : () => {
+    Blockly_Debuggee.state.alertFlag = true;
   }
 };
-
 
 
 
