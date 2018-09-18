@@ -141,40 +141,7 @@ Blockly.JavaScript['text_length'] = function(block) {
     }
     return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
   };
-
-
-
-  // Blockly.JavaScript['text_changeCase'] = function(block) {
-  //   // Change capitalization.
-  //   var OPERATORS = {
-  //     'UPPERCASE': '.toUpperCase()',
-  //     'LOWERCASE': '.toLowerCase()',
-  //     'TITLECASE': null
-  //   };
-  //   var operator = OPERATORS[block.getFieldValue('CASE')];
-  //   var code;
-  //   if (operator) {
-  //     // Upper and lower case are functions built into JavaScript.
-  //     var argument0 = Blockly.JavaScript.valueToCode(block, 'TEXT',
-  //         Blockly.JavaScript.ORDER_MEMBER) || '\'\'';
-  //     code = '(' + argument0 + ')' + operator;
-  //   } else {
-  //     // Title case is not a native JavaScript function.  Define one.
-  //     var functionName = Blockly.JavaScript.provideFunction_(
-  //         'text_toTitleCase',
-  //         [ 'function ' +
-  //             Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + '(str) {',
-  //           '  return str.replace(/\\S+/g,',
-  //           '      function(txt) {return txt[0].toUpperCase() + ' +
-  //               'txt.substring(1).toLowerCase();});',
-  //           '}']);
-  //     var argument0 = Blockly.JavaScript.valueToCode(block, 'TEXT',
-  //         Blockly.JavaScript.ORDER_NONE) || '\'\'';
-  //     code = functionName + '(' + '(' + argument0 + ')' + ')';
-  //   }
-  //   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
-  // };
-
+  
 
   Blockly.JavaScript['text_changeCase'] = function(block) {
     // Change capitalization.

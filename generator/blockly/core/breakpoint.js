@@ -18,7 +18,6 @@ export var Breakpoint_Icon = function(block) {
   }
 
 
-  // prepei na brw allo func name
   Breakpoint_Icon.prototype.setVisible = function (visible){
     var isEnable = Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{if(obj.block_id==this.block_.id) return obj.enable;});
     console.log(isEnable);
@@ -38,6 +37,7 @@ Breakpoint_Icon.prototype.myDisable = function (){
 
 
 // ---------------------------------------------------------------------     
+
 Blockly.utils.createSvgElement=function(a,b,c){
   a=document.createElementNS(Blockly.SVG_NS,a);
   for(var d in b)a.setAttribute(d,b[d]);

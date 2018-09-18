@@ -80,7 +80,8 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
               var new_br = {
                 "block_id" : block.id,
                 "enable" : true,
-                "icon" : new Breakpoint_Icon(block)
+                "icon" : new Breakpoint_Icon(block),
+                "change": false
               }
               Blockly_Debugger.actions["Breakpoint"].breakpoints.push(new_br);
               block.setCollapsed(false);                        // gia na anoigei otan exw breakpoint

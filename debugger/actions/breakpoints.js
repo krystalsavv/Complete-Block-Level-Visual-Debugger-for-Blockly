@@ -3,6 +3,9 @@ import {Debuggee_Worker, Blockly_Debugger} from '../init.js';
 Blockly_Debugger.actions["Breakpoint"] = {};
 Blockly_Debugger.actions["RunToCursor"] = {};
 
+
+// Breakpoints
+
 Blockly_Debugger.actions["Breakpoint"].breakpoints = [];
 
 Blockly_Debugger.actions["Breakpoint"].handler = () => {
@@ -10,6 +13,7 @@ Blockly_Debugger.actions["Breakpoint"].handler = () => {
     Debuggee_Worker.Instance().postMessage({"type":"breakpoint", "data": Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return {"block_id" : obj.block_id,
                                                                                                                                                 "enable" : obj.enable}}),});
 }
+
 
 Blockly_Debugger.actions["Breakpoint"].wait_view = (block_id) => {
     var CurrentSystemEditorId = window.workspace["blockly1"].getBlockById(block_id) ? "blockly1" : "blockly2";
@@ -26,11 +30,13 @@ Blockly_Debugger.actions["Breakpoint"].wait_view = (block_id) => {
     document.getElementById(block_id).style['stroke-width'] = '5px';
 }
 
+
 Blockly_Debugger.actions["Breakpoint"].reset_view = (block_id) =>{
     document.getElementById(block_id).style.stroke = 'yellow';
     document.getElementById(block_id).style.fill = 'red';
     document.getElementById(block_id).style['stroke-width'] = '1px';
 }
+
 
 Blockly_Debugger.actions["Breakpoint"].disable = (block_id) =>{
     var i = Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).indexOf(block_id);
@@ -45,6 +51,7 @@ Blockly_Debugger.actions["Breakpoint"].disable = (block_id) =>{
     }
 }
 
+
 Blockly_Debugger.actions["Breakpoint"].enable = (block_id) =>{
     var i = Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).indexOf(block_id);
     if(i!=-1){
@@ -56,6 +63,9 @@ Blockly_Debugger.actions["Breakpoint"].enable = (block_id) =>{
     }
 }
 
+
+
+// Run to Cursor
 
 Blockly_Debugger.actions["RunToCursor"].handler = (block_id) => {
     if(!Debuggee_Worker.hasInstance()) {
