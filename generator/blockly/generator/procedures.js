@@ -19,12 +19,10 @@ import {generation} from '../blockly_init.js'
     var returnValue = Blockly.JavaScript.valueToCode(block, 'RETURN',
         Blockly.JavaScript.ORDER_NONE) || '';
 
-     if (returnValue) {
-         returnValue = '  let $returnValue = ' + returnValue + ';\n' + '  if(Blockly_Debuggee.state.currNest != -1) Blockly_Debuggee.state.currState.parent = false;\n  Blockly_Debuggee.state.currNest = global_nest;\n' + '  return $returnValue;\n';
-     }else{
-         returnValue = '  if(Blockly_Debuggee.state.currNest != -1) Blockly_Debuggee.state.currState.parent = false;\n  Blockly_Debuggee.state.currNest = global_nest;\n' + '  return;\n';
-     }
-
+    if(returnValue)
+        returnValue = '  return Blockly_Debuggee.function_return_decorator(' + returnValue + ', caller_nest);\n';
+    else
+        returnValue = '  return Blockly_Debuggee.function_return_decorator( \'\', caller_nest);\n';
 
     var args = [];
     for (var i = 0; i < block.arguments_.length; i++) {
@@ -32,7 +30,7 @@ import {generation} from '../blockly_init.js'
           Blockly.Variables.NAME_TYPE);
     }
       var code =  'async function ' + funcName + '(' + args.join(', ') + ') {\n' +  
-                '  let global_nest = Blockly_Debuggee.state.currNest;\n' + 
+                '  let caller_nest = Blockly_Debuggee.state.currNest;\n' + 
                 '  if(isStepOver() || isStepParent()) Blockly_Debuggee.state.currNest = -1;\n' +
                 branch +    
                 returnValue + '}';
@@ -78,13 +76,13 @@ Blockly.JavaScript['procedures_callnoreturn'] = function(block) {
   // Conditionally return value from a procedure.
   var condition = Blockly.JavaScript.valueToCode(block, 'CONDITION',
       Blockly.JavaScript.ORDER_NONE) || 'false';
-  var code = 'if (' + condition + ') {\n' + '  Blockly_Debuggee.state.currNest = global_nest;\n  Blockly_Debuggee.state.currState.parent = false;\n';
+  var code = 'if (' + condition + ') {\n';
   if (block.hasReturnValue_) {
     var value = Blockly.JavaScript.valueToCode(block, 'VALUE',
         Blockly.JavaScript.ORDER_NONE) || 'null';
-    code += '  return ' + value + ';\n';
+    code += '  return Blockly_Debuggee.function_return_decorator(' + value + ', caller_nest);\n';
   } else {
-    code += '  return;\n';
+    code += '  return Blockly_Debuggee.function_return_decorator(\'\', caller_nest);\n';
   }
   code += '}\n';
   return code;

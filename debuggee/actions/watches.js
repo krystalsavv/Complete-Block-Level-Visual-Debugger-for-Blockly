@@ -94,7 +94,7 @@ Blockly_Debuggee.actions["variables"] = (function(){
 })();
 
 
-Blockly_Debuggee.actions["eval"].evalLocal;
+Blockly_Debuggee.actions["eval"].evalLocal;     // defined inside the start action in the eval()
 
 Blockly_Debuggee.actions["eval"].handler = function (expr){
     Blockly_Debuggee.actions["eval"].evalLocal(expr);

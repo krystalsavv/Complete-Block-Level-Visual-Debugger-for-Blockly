@@ -79,6 +79,15 @@ Blockly_Debuggee.wait = (function(){
 })();
 
 
+Blockly_Debuggee.function_return_decorator = function(return_value, parent_nest){
+  if(Blockly_Debuggee.state.currNest != -1) 
+    Blockly_Debuggee.state.currState.parent = false;
+  Blockly_Debuggee.state.currNest = parent_nest;
+  return return_value;
+};
+
+
+
 export var window = {
   alert : async function(msg) {
     Blockly_Debuggee.actions["variables"].updateDebugger();     // gia na fainontai swsta kata to alert ta value pisw ston pinaka
