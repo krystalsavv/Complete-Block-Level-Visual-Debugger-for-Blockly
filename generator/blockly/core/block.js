@@ -17,7 +17,7 @@ Blockly.Block.prototype.toString = function(opt_maxLength, opt_emptyToken) {
           var child = input.connection.targetBlock();
           if (child) {
               var child_text = child.toString(undefined, opt_emptyToken);
-              child_text = "(" + child_text + ")";
+              child_text = "(" + child_text + ")";                    // add ()
             text.push(child_text);
           } else {
             text.push(emptyFieldPlaceholder);
