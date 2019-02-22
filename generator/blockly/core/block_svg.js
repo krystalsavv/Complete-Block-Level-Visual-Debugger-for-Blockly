@@ -70,8 +70,7 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
   
       menuOptions.push(Blockly.ContextMenu.blockDeleteOption(block));
 
-
-      // Breakpoints
+      //
       var breakpointOption = {
         text: (!Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).includes(block.id)) ? "Add Breakpoint" : "Remove Breakpoint",
         enabled: true,
@@ -96,67 +95,15 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
           }
       };
       menuOptions.push(breakpointOption);
-
-      var DisableBreakpointOption = {
-        text: (Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{if(obj.enable) return obj.block_id}).includes(block.id)) ? "Disable Breakpoint" : "Enable Breakpoint",
-        enabled: (Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).includes(block.id)) ? true : false,
-        callback: function() {
-          if(Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{if(obj.enable) return obj.block_id}).includes(block.id))
-            Blockly_Debugger.actions["Breakpoint"].disable(block.id);
-          else
-            Blockly_Debugger.actions["Breakpoint"].enable(block.id);
-        }
-      }
-      menuOptions.push(DisableBreakpointOption);
-
-      // Run to cursor
-      var runToCursorOption = {
-        text: "Run to cursor",
-        enabled: true,
-        callback: function() {
-          Blockly_Debugger.actions["RunToCursor"].handler(block.id);
-        }
-      };
-      menuOptions.push(runToCursorOption);
-
-
+      // menuOptions.push(Blockly_Debugger.actions["Breakpoint"].menuOption(block));
+      menuOptions.push(Blockly_Debugger.actions["Breakpoint"].disableMenuOption(block));
+      menuOptions.push(Blockly_Debugger.actions["RunToCursor"].menuOption(block));
       if(Debuggee_Worker.hasInstance()){
-        var watchOption = {
-          text:(!Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).includes(block.toString())) ? "Add Watch" : "Remove Watch",
-          enabled: (block.outputConnection==null) ? false : true,
-          callback: function(){
-            var name = block.toString();
-
-            if(!Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).includes(name)){
-              var code = Blockly.JavaScript.myBlockToCode(block);
-              var new_watch = {
-                "name": name,
-                "code": code, 
-                "value": undefined
-              }
-              Blockly_Debugger.actions["Watch"].getWatches().push(new_watch);
-            }else{
-              var index = Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).indexOf(name);
-              if (index !== -1) Blockly_Debugger.actions["Watch"].getWatches().splice(index, 1);
-            }
-            Blockly_Debugger.actions["Watch"].handler();  
-          }
-        }
-        menuOptions.push(watchOption);
-
-
-        // Evaluate
-        var evalOption = {
-          text: "Evaluate",
-          enabled: (block.type === "variables_set" || block.type==="math_change") ? true : false,
-          callback: function(){
-            Blockly_Debugger.actions["Eval"].handler(Blockly.JavaScript.myBlockToCode(block));  
-          }
-        };
-        menuOptions.push(evalOption);   
+        menuOptions.push(Blockly_Debugger.actions["Watch"].menuOption(block)); 
+        menuOptions.push(Blockly_Debugger.actions["Eval"].menuOption(block));
       }
     }
-
+    //
 
     var block___ = {
       text: "block___",
@@ -176,7 +123,7 @@ Blockly.BlockSvg.prototype.showContextMenu_ = function(e) {
       this.customContextMenu(menuOptions);
     }
   
-    Blockly.ContextMenu.show(e, menuOptions, this.RTL);
+    Blockly.ContextMenu.show(e, menuOptions, this.RTL);    
     Blockly.ContextMenu.currentBlock = this;
   };
 

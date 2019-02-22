@@ -57,7 +57,7 @@ Blockly_Debugger.actions["Variables"] = (function(){
     return {
         update : update,
         getVariables : getVariables,
-        init : init       
+        init : init   
     }
 })();
 
@@ -98,11 +98,38 @@ Blockly_Debugger.actions["Watch"] = (function(){
         }
     }
 
+    function menuOption(block){
+        var watchOption = {
+            text:(!Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).includes(block.toString())) ? "Add Watch" : "Remove Watch",
+            enabled: (block.outputConnection==null) ? false : true,
+            callback: function(){
+              var name = block.toString();
+  
+              if(!Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).includes(name)){
+                var code = Blockly.JavaScript.myBlockToCode(block);
+                var new_watch = {
+                  "name": name,
+                  "code": code, 
+                  "value": undefined
+                }
+                Blockly_Debugger.actions["Watch"].getWatches().push(new_watch);
+              }else{
+                var index = Blockly_Debugger.actions["Watch"].getWatches().map((obj)=>{return obj.name;}).indexOf(name);
+                if (index !== -1) Blockly_Debugger.actions["Watch"].getWatches().splice(index, 1);
+              }
+              Blockly_Debugger.actions["Watch"].handler();  
+            }
+          };
+          return watchOption;
+    }
+
+
     return {
         handler : handler,
         update : update,
         getWatches : getWatches,
-        init : init       
+        init : init ,  
+        menuOption : menuOption        
     }
 })();
 
@@ -115,6 +142,18 @@ Blockly_Debugger.actions["Eval"].handler = function (expr){
     if(!Debuggee_Worker.hasInstance()) return;
     Debuggee_Worker.Instance().postMessage({"type":"eval", "data": expr});
 }
+
+Blockly_Debugger.actions["Eval"].menuOption = function (block){
+    var evalOption = {
+        text: "Evaluate",
+        enabled: (block.type === "variables_set" || block.type==="math_change") ? true : false,
+        callback: function(){
+          Blockly_Debugger.actions["Eval"].handler(Blockly.JavaScript.myBlockToCode(block));  
+        }
+    };
+    return evalOption;
+}
+
 
 
 Debuggee_Worker.AddOnDispacher("watches", Blockly_Debugger.actions["Watch"].update);

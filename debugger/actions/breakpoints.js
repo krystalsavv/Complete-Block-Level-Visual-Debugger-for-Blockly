@@ -63,6 +63,49 @@ Blockly_Debugger.actions["Breakpoint"].enable = (block_id) =>{
     }
 }
 
+Blockly_Debugger.actions["Breakpoint"].menuOption = (block) => {
+    var breakpointOption = {
+        text: (!Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).includes(block.id)) ? "Add Breakpoint" : "Remove Breakpoint",
+        enabled: true,
+        callback: function() {
+            if(!Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).includes(block.id)){
+              var new_br = {
+                "block_id" : block.id,
+                "enable" : true,
+                "icon" : new Breakpoint_Icon(block),
+                "change": false
+              }
+              Blockly_Debugger.actions["Breakpoint"].breakpoints.push(new_br);
+              block.setCollapsed(false);                        // gia na anoigei otan exw breakpoint
+            }
+            else{
+              var icon = Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{if(obj.block_id === block.id) return obj.icon});
+              icon[0].myDisable();
+              var index = Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).indexOf(block.id);
+              if (index !== -1) Blockly_Debugger.actions["Breakpoint"].breakpoints.splice(index, 1);
+            }
+            Blockly_Debugger.actions["Breakpoint"].handler();
+          }
+      };
+      return breakpointOption;
+}
+
+
+Blockly_Debugger.actions["Breakpoint"].disableMenuOption = (block) => {
+    var DisableBreakpointOption = {
+        text: (Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{if(obj.enable) return obj.block_id}).includes(block.id)) ? "Disable Breakpoint" : "Enable Breakpoint",
+        enabled: (Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{return obj.block_id;}).includes(block.id)) ? true : false,
+        callback: function() {
+          if(Blockly_Debugger.actions["Breakpoint"].breakpoints.map((obj)=>{if(obj.enable) return obj.block_id}).includes(block.id))
+            Blockly_Debugger.actions["Breakpoint"].disable(block.id);
+          else
+            Blockly_Debugger.actions["Breakpoint"].enable(block.id);
+        }
+      };
+      return DisableBreakpointOption;
+}
+
+
 
 
 // Run to Cursor
@@ -74,6 +117,18 @@ Blockly_Debugger.actions["RunToCursor"].handler = (block_id) => {
     }; 
     Debuggee_Worker.Instance().postMessage({"type":"runToCursor", "data": block_id});
 }
+
+Blockly_Debugger.actions["RunToCursor"].menuOption = (block) =>{
+    var runToCursorOption = {
+        text: "Run to cursor",
+        enabled: true,
+        callback: function() {
+          Blockly_Debugger.actions["RunToCursor"].handler(block.id);
+        }
+    };
+    return runToCursorOption;
+}
+
 
 Debuggee_Worker.AddOnDispacher("breakpoint_wait_view", Blockly_Debugger.actions["Breakpoint"].wait_view);
 Debuggee_Worker.AddOnDispacher("breakpoint_reset_view", Blockly_Debugger.actions["Breakpoint"].reset_view);

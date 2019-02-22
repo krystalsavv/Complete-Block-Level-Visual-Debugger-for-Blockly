@@ -45,7 +45,8 @@ Blockly_Debuggee.wait = (function(){
     highlightBlock(block_id, CurrentSystemEditorId);
 
     var hasBreakpoint = Blockly_Debuggee.actions.breakpoint.includes_enable(block_id) || (Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint === block_id);
-    
+    if((Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint === block_id))
+      Blockly_Debuggee.actions["runToCursor"].cursorBreakpoint = "";
     if(Blockly_Debuggee.state.isState("continue") && !hasBreakpoint){ 
       Blockly_Debuggee.state.currNest = nest;   
       return;
