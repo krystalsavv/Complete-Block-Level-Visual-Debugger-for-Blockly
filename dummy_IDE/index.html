@@ -441,20 +441,18 @@
     </block>
   </xml>
 -->
-  <script>
+<script>
+  var xhttp = new XMLHttpRequest();
 
-var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          document.getElementById('startBlocks').innerHTML = xhttp.responseText;
+          dispatchEvent(new Event("loadStartingBlocks")); 
+      }
+  };
 
-xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        document.getElementById('startBlocks').innerHTML = xhttp.responseText;
-        dispatchEvent(new Event("loadStartingBlocks")); 
-    }
-};
-
-xhttp.open("GET", "starting_block.xml", true);
-xhttp.send();
-
+  xhttp.open("GET", "starting_block.xml", true);
+  xhttp.send();
 </script>
 
 <script  src='./dist/bundle.js'></script>
