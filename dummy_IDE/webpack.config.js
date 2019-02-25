@@ -12,6 +12,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   devtool: "source-map",
+  node: {
+    fs: 'empty'
+  },
   plugins: [
     new BrowserSyncPlugin({
       host: 'localhost',

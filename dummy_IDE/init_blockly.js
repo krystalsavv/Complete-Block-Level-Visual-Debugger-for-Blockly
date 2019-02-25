@@ -24,7 +24,7 @@ window.workspace["blockly2"] = Blockly.inject(
 window.workspace["blockly2"].systemEditorId = 'blockly2';    
 
 addEventListener("loadStartingBlocks",function (){
-    
+    Blockly.Xml.domToText(document.getElementById('startBlocks'));
     Blockly.Xml.domToWorkspace(
         document.getElementById('startBlocks'), 
         window.workspace["blockly1"]
