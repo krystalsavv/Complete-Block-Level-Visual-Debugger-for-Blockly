@@ -9,7 +9,7 @@ affects only the source code that is output by Blockly.
 
 Including:
     1. Breakpoints
-    2 Tracing
+    2. Tracing
     3. Watches
 
 Run: 
