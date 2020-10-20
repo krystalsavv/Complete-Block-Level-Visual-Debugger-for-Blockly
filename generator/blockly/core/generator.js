@@ -1,4 +1,5 @@
 import {generation} from '../blockly_init.js'
+import {genEval} from '../../genEval.js'
 
 Blockly.Generator.prototype.blockToCode = function(block) {
     if (!block) {
@@ -24,13 +25,16 @@ Blockly.Generator.prototype.blockToCode = function(block) {
       // Value blocks return tuples of code and operator order.
       goog.asserts.assert(block.outputConnection,               //!! New blockly 
         'Expecting string from statement block "%s".', block.type);
-      if (this.STATEMENT_PREFIX) 
-        code[0] = 'await $id(eval(update_values()), await wait(' + my_nest + ', ' + '\'' + block.id + '\', \''+ generation.currentSystemEditorId + '\'), ' + code[0] + ')';
+      if (this.STATEMENT_PREFIX) {
+        let cs = genEval (my_nest,  block.id, generation.currentSystemEditorId);
+        code[0] = 'await $id('+ cs + ', ' + code[0] + ')';
+      }
       return [this.scrub_(block, code[0]), code[1]];
     } else if (goog.isString(code)) {
       var id = block.id.replace(/\$/g, '$$$$');  // Issue 251.  //!! New blockly 
       if (this.STATEMENT_PREFIX) {
-        code = this.STATEMENT_PREFIX.replace(/%1/g, 'eval(update_values()), await wait(' + my_nest + ', \'' + block.id + '\', \''+ generation.currentSystemEditorId + '\') ') +
+        let cs = genEval (my_nest,  block.id, generation.currentSystemEditorId);
+        code = this.STATEMENT_PREFIX.replace(/%1/g, cs ) +
             code;
       }
       return this.scrub_(block, code);
@@ -49,7 +53,8 @@ Blockly.Generator.prototype.addLoopTrap = function(branch, id) {
     branch = this.INFINITE_LOOP_TRAP.replace(/%1/g, '\'' + id + '\'') + branch;
   }
   if (this.STATEMENT_PREFIX) {
-    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, 'eval(update_values()), await wait(' + generation.nest + ', \'' + id + '\', \''+ generation.currentSystemEditorId + '\')'), this.INDENT);
+    let cs =  genEval (generation.nest, id, generation.currentSystemEditorId);
+    branch += this.prefixLines(this.STATEMENT_PREFIX.replace(/%1/g, cs), this.INDENT);
   }
   return branch;
 };

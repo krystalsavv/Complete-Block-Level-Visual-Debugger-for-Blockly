@@ -9,7 +9,7 @@ Blockly_Debugger.actions["Start"].handler = (cursorBreakpoint) => {
     var code1 = Blockly.JavaScript.workspaceToCode(window.workspace["blockly1"]);
     var code2 = Blockly.JavaScript.workspaceToCode(window.workspace["blockly2"]); 
     var code = code1 + code2;
-    
+    code.replace(/__DOLLAR__/g, '\$');
     Blockly_Debugger.actions["Variables"].init();
     Blockly_Debugger.actions["Watch"].init();
 
