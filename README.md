@@ -14,6 +14,10 @@ Including:
 - Watches
 ___
 
+Publication:
+- [Savidis A., Savaki C. (2020) Complete Block-Level Visual Debugger for Blockly. In: Ahram T., Karwowski W., Pickl S., Taiar R. (eds) Human Systems Engineering and Design II. IHSED 2019. Advances in Intelligent Systems and Computing, vol 1026. Springer, Cham.](https://www.researchgate.net/publication/335170518_Complete_Block-Level_Visual_Debugger_for_Blockly)
+___
+
 Run: 
 - open the terminal 
 - inside the dummy_IDE directory run: ``npm run build``
